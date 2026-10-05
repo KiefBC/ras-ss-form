@@ -34,20 +34,20 @@ own profile row (so the app can show "your account has been deactivated").
 Existing sessions are cut off immediately because every policy checks it.
 */
 create table public.profiles (
-  id          uuid primary key references auth.users (id) on delete cascade,
-  full_name   text not null,
-  role        public.user_role not null default 'framer',
-  active      boolean not null default true,
-  created_at  timestamptz not null default now()
+id          uuid primary key references auth.users (id) on delete cascade,
+full_name   text not null,
+role        public.user_role not null default 'framer',
+active      boolean not null default true,
+created_at  timestamptz not null default now()
 );
 
 -- Sites
 create table public.sites (
-  id          uuid primary key default gen_random_uuid(),
-  name        text not null unique,
-  address     text,
-  active      boolean not null default true,
-  created_at  timestamptz not null default now()
+id          uuid primary key default gen_random_uuid(),
+name        text not null unique,
+address     text,
+active      boolean not null default true,
+created_at  timestamptz not null default now()
 );
 
 /*
@@ -110,57 +110,57 @@ are exact timestamps maintained by a trigger, not by the client.
 flagged_incorrect: a framer's "this submission is wrong" toggle.
 */
 create table public.submissions (
-  id                          uuid primary key default gen_random_uuid(),
-  worker_id                   uuid not null references public.profiles (id),
-  site_id                     uuid not null references public.sites (id),
-  work_date                   date not null,
+id                          uuid primary key default gen_random_uuid(),
+worker_id                   uuid not null references public.profiles (id),
+site_id                     uuid not null references public.sites (id),
+work_date                   date not null,
 
-  -- PPE issues
-  hard_hat_issue              boolean not null default false,
-  vest_issue                  boolean not null default false,
-  boots_issue                 boolean not null default false,
-  eye_protection_issue        boolean not null default false,
+-- PPE issues
+hard_hat_issue              boolean not null default false,
+vest_issue                  boolean not null default false,
+boots_issue                 boolean not null default false,
+eye_protection_issue        boolean not null default false,
 
-  -- Site issues
-  fall_protection_issue       boolean not null default false,
-  ladders_scaffolding_issue   boolean not null default false,
-  tools_cords_issue           boolean not null default false,
-  hazards_issue               boolean not null default false,
+-- Site issues
+fall_protection_issue       boolean not null default false,
+ladders_scaffolding_issue   boolean not null default false,
+tools_cords_issue           boolean not null default false,
+hazards_issue               boolean not null default false,
 
-  -- Explicit all-clear
-  no_issues                   boolean not null default false,
+-- Explicit all-clear
+no_issues                   boolean not null default false,
 
-  notes                       text check (char_length(notes) <= 2000),
+notes                       text check (char_length(notes) <= 2000),
 
-  has_issues                  boolean generated always as (
-                                hard_hat_issue
-                                or vest_issue
-                                or boots_issue
-                                or eye_protection_issue
-                                or fall_protection_issue
-                                or ladders_scaffolding_issue
-                                or tools_cords_issue
-                                or hazards_issue
-                              ) stored,
+has_issues                  boolean generated always as (
+hard_hat_issue
+or vest_issue
+or boots_issue
+or eye_protection_issue
+or fall_protection_issue
+or ladders_scaffolding_issue
+or tools_cords_issue
+or hazards_issue
+) stored,
 
-  flagged_incorrect           boolean not null default false,
-  flagged_at                  timestamptz,
+flagged_incorrect           boolean not null default false,
+flagged_at                  timestamptz,
 
-  submitted_at                timestamptz not null default now(),
-  updated_at                  timestamptz not null default now(),
+submitted_at                timestamptz not null default now(),
+updated_at                  timestamptz not null default now(),
 
-  constraint submissions_checklist_answered check (
-    no_issues <> (
-      hard_hat_issue
-      or vest_issue
-      or boots_issue
-      or eye_protection_issue
-      or fall_protection_issue
-      or ladders_scaffolding_issue
-      or tools_cords_issue
-      or hazards_issue
-    )
-  )
+constraint submissions_checklist_answered check (
+no_issues <> (
+hard_hat_issue
+or vest_issue
+or boots_issue
+or eye_protection_issue
+or fall_protection_issue
+or ladders_scaffolding_issue
+or tools_cords_issue
+or hazards_issue
+)
+)
 );
 
 /*
@@ -171,12 +171,14 @@ A flagged (incorrect) form is excluded, so once the submitter flags a
 mistake, anyone can file the replacement.
 */
 create unique index submissions_one_active_per_site_day
-  on public.submissions (site_id, work_date)
-  where not flagged_incorrect;
+on public.submissions (site_id, work_date)
+where not flagged_incorrect;
 
 -- Dashboard filters by site + date range and by worker + date range.
-create index submissions_site_date_idx   on public.submissions (site_id, work_date);
-create index submissions_worker_date_idx on public.submissions (worker_id, work_date);
+create index submissions_site_date_idx   on public.submissions (site_id,
+work_date);
+create index submissions_worker_date_idx on public.submissions (worker_id,
+work_date);
 
 /*
 Timestamps are set by the database, never trusted from the client.
@@ -208,11 +210,13 @@ end;
 $$;
 
 -- Trigger functions are never called directly by anyone.
-revoke execute on function public.submissions_set_timestamps() from public, anon, authenticated;
+revoke execute on function public.submissions_set_timestamps() from public,
+anon,
+authenticated;
 
 create trigger submissions_set_timestamps
-  before insert or update on public.submissions
-  for each row execute function public.submissions_set_timestamps();
+before insert or update on public.submissions
+for each row execute function public.submissions_set_timestamps();
 
 /*
 submission_photos is the metadata for each uploaded photo
@@ -220,12 +224,15 @@ The image bytes live in Supabase Storage; this table stores where they are.
 Path convention: {worker_id}/{submission_id}/{uuid}.jpg
 */
 create table public.submission_photos (
-  id             uuid primary key default gen_random_uuid(),
-  submission_id  uuid not null references public.submissions (id) on delete cascade,
-  storage_path   text not null unique,
-  mime_type      text not null check (mime_type in ('image/jpeg', 'image/png', 'image/webp')),
-  size_bytes     integer not null check (size_bytes > 0 and size_bytes <= 10485760), -- 10 MB
-  created_at     timestamptz not null default now()
+id             uuid primary key default gen_random_uuid(),
+submission_id  uuid not null references public.submissions (id) on delete cascade,
+storage_path   text not null unique,
+mime_type      text not null check (mime_type in ('image/jpeg',
+'image/png',
+'image/webp')),
+-- 10 MB
+size_bytes     integer not null check (size_bytes > 0 and size_bytes <= 10485760),
+created_at     timestamptz not null default now()
 );
 
 create index submission_photos_submission_idx on public.submission_photos (submission_id);
@@ -307,11 +314,13 @@ begin
 end;
 $$;
 
-revoke execute on function public.profiles_guard_admins() from public, anon, authenticated;
+revoke execute on function public.profiles_guard_admins() from public,
+anon,
+authenticated;
 
 create trigger profiles_guard_admins
-  before update on public.profiles
-  for each row execute function public.profiles_guard_admins();
+before update on public.profiles
+for each row execute function public.profiles_guard_admins();
 
 /*
 Auto-create a profile when an auth user is created.
@@ -335,11 +344,13 @@ begin
 end;
 $$;
 
-revoke execute on function public.handle_new_user() from public, anon, authenticated;
+revoke execute on function public.handle_new_user() from public,
+anon,
+authenticated;
 
 create trigger on_auth_user_created
-  after insert on auth.users
-  for each row execute function public.handle_new_user();
+after insert on auth.users
+for each row execute function public.handle_new_user();
 
 /*
 Row Level Security with access is DENIED by default.
@@ -356,55 +367,55 @@ alter table public.sites             enable row level security;
 alter table public.submissions       enable row level security;
 alter table public.submission_photos enable row level security;
 
--- Framers see their own profile (even when deactivated); admins see everyone.
+-- Framers see their own profile; admins see everyone.
 create policy "profiles: read own or admin reads all"
-  on public.profiles for select
-  to authenticated
-  using (id = (select auth.uid()) or (select public.is_admin()));
+on public.profiles for select
+to authenticated
+using (id = (select auth.uid()) or (select public.is_admin()));
 
 -- Only admins change profiles.
 create policy "profiles: admin updates"
-  on public.profiles for update
-  to authenticated
-  using ((select public.is_admin()))
-  with check ((select public.is_admin()));
+on public.profiles for update
+to authenticated
+using ((select public.is_admin()))
+with check ((select public.is_admin()));
 
 -- Every active user needs the site list for the form dropdown.
 create policy "sites: active users read"
-  on public.sites for select
-  to authenticated
-  using ((select public.is_active_user()));
+on public.sites for select
+to authenticated
+using ((select public.is_active_user()));
 
 -- Admins create, edit, and delete sites.
 create policy "sites: admin full control"
-  on public.sites for all
-  to authenticated
-  using ((select public.is_admin()))
-  with check ((select public.is_admin()));
+on public.sites for all
+to authenticated
+using ((select public.is_admin()))
+with check ((select public.is_admin()));
 
 -- Framers view only their own submissions; admins view all.
 create policy "submissions: read own or admin reads all"
-  on public.submissions for select
-  to authenticated
-  using (
-    (worker_id = (select auth.uid()) and (select public.is_active_user()))
-    or (select public.is_admin())
-  );
+on public.submissions for select
+to authenticated
+using (
+(worker_id = (select auth.uid()) and (select public.is_active_user()))
+or (select public.is_admin())
+);
 
 -- Framers insert only as themselves, for an active site, for today, 5am-5pm.
 create policy "submissions: framer inserts own"
-  on public.submissions for insert
-  to authenticated
-  with check (
-    worker_id = (select auth.uid())
-    and (select public.is_active_user())
-    and public.within_edit_window(work_date)
-    and not flagged_incorrect
-    and exists (
-      select 1 from public.sites s
-      where s.id = site_id and s.active
-    )
-  );
+on public.submissions for insert
+to authenticated
+with check (
+worker_id = (select auth.uid())
+and (select public.is_active_user())
+and public.within_edit_window(work_date)
+and not flagged_incorrect
+and exists (
+select 1 from public.sites s
+where s.id = site_id and s.active
+)
+);
 
 /*
 Framers edit their own submission only during the work-day window
@@ -413,22 +424,22 @@ A flagged form is locked for its framer: it's been declared wrong, and this
 also stops a framer from unflagging it with a direct UPDATE.
 */
 create policy "submissions: framer edits own during work day"
-  on public.submissions for update
-  to authenticated
-  using (
-    worker_id = (select auth.uid())
-    and (select public.is_active_user())
-    and not flagged_incorrect
-    and public.within_edit_window(work_date)
-  )
-  with check (
-    worker_id = (select auth.uid())
-    and public.within_edit_window(work_date)
-    and exists (
-      select 1 from public.sites s
-      where s.id = site_id and s.active
-    )
-  );
+on public.submissions for update
+to authenticated
+using (
+worker_id = (select auth.uid())
+and (select public.is_active_user())
+and not flagged_incorrect
+and public.within_edit_window(work_date)
+)
+with check (
+worker_id = (select auth.uid())
+and public.within_edit_window(work_date)
+and exists (
+select 1 from public.sites s
+where s.id = site_id and s.active
+)
+);
 
 /*
 Admins can insert, edit, and delete any submission.
@@ -436,10 +447,10 @@ Deliberately NO framer delete policy: a safety record is never removed
 Mistakes are flagged and replaced instead.
 */
 create policy "submissions: admin full control"
-  on public.submissions for all
-  to authenticated
-  using ((select public.is_admin()))
-  with check ((select public.is_admin()));
+on public.submissions for all
+to authenticated
+using ((select public.is_admin()))
+with check ((select public.is_admin()));
 
 /*
 Flagging a submission as incorrect
@@ -452,8 +463,8 @@ a replacement already exists that would leave two active forms, so it's
 refused with a readable message instead of a raw unique-violation error.
 */
 create or replace function public.set_submission_flag(
-  p_submission_id uuid,
-  p_flagged boolean
+p_submission_id uuid,
+p_flagged boolean
 )
 returns void
 language plpgsql
@@ -487,8 +498,11 @@ exception
 end;
 $$;
 
-revoke execute on function public.set_submission_flag(uuid, boolean) from public, anon;
-grant  execute on function public.set_submission_flag(uuid, boolean) to authenticated;
+revoke execute on function public.set_submission_flag(uuid,
+boolean) from public,
+anon;
+grant  execute on function public.set_submission_flag(uuid,
+boolean) to authenticated;
 
 
 /*
@@ -509,14 +523,14 @@ Never the checklist, notes, or photos. Returns no row if the site is clear,
 or if the caller isn't an active user.
 */
 create or replace function public.site_submission_status(
-  p_site_id uuid,
-  p_work_date date
+p_site_id uuid,
+p_work_date date
 )
 returns table (
-  submitted_by   text,
-  submitted_at   timestamptz,
-  is_own         boolean,
-  submission_id  uuid
+submitted_by   text,
+submitted_at   timestamptz,
+is_own         boolean,
+submission_id  uuid
 )
 language sql
 stable
@@ -536,23 +550,26 @@ as $$
     and public.is_active_user();
 $$;
 
-revoke execute on function public.site_submission_status(uuid, date) from public, anon;
-grant  execute on function public.site_submission_status(uuid, date) to authenticated;
+revoke execute on function public.site_submission_status(uuid,
+date) from public,
+anon;
+grant  execute on function public.site_submission_status(uuid,
+date) to authenticated;
 
 -- You can see a photo row if you can see its parent submission.
 create policy "photos: read if parent submission visible"
-  on public.submission_photos for select
-  to authenticated
-  using (
-    exists (
-      select 1 from public.submissions s
-      where s.id = submission_id
-        and (
-          (s.worker_id = (select auth.uid()) and (select public.is_active_user()))
-          or (select public.is_admin())
-        )
-    )
-  );
+on public.submission_photos for select
+to authenticated
+using (
+exists (
+select 1 from public.submissions s
+where s.id = submission_id
+and (
+(s.worker_id = (select auth.uid()) and (select public.is_active_user()))
+or (select public.is_admin())
+)
+)
+);
 
 /*
 Framers attach photos to their own submission while it's editable, OR
@@ -561,28 +578,28 @@ that runs right after the form is created, so a form submitted at 4:59pm
 still gets its photos attached after the window closes.
 */
 create policy "photos: framer adds to own editable submission"
-  on public.submission_photos for insert
-  to authenticated
-  with check (
-    storage_path like (select auth.uid())::text || '/%'
-    and (select public.is_active_user())
-    and exists (
-      select 1 from public.submissions s
-      where s.id = submission_id
-        and s.worker_id = (select auth.uid())
-        and (
-          public.within_edit_window(s.work_date)
-          or s.submitted_at > now() - interval '30 minutes'
-        )
-    )
-  );
+on public.submission_photos for insert
+to authenticated
+with check (
+storage_path like (select auth.uid())::text || '/%'
+and (select public.is_active_user())
+and exists (
+select 1 from public.submissions s
+where s.id = submission_id
+and s.worker_id = (select auth.uid())
+and (
+public.within_edit_window(s.work_date)
+or s.submitted_at > now() - interval '30 minutes'
+)
+)
+);
 
 -- Admins can do anything with photo rows. Framers can't delete photos.
 create policy "photos: admin full control"
-  on public.submission_photos for all
-  to authenticated
-  using ((select public.is_admin()))
-  with check ((select public.is_admin()));
+on public.submission_photos for all
+to authenticated
+using ((select public.is_admin()))
+with check ((select public.is_admin()));
 
 /*
 Storage: private bucket for photos
@@ -593,49 +610,53 @@ Files can only be removed through the Storage API (Supabase blocks deleting
 from storage tables in SQL), so deleting a submission's photo rows does not
 remove the files: the admin delete flow calls storage.remove() itself.
 */
-insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+insert into storage.buckets (id,
+name,
+public,
+file_size_limit,
+allowed_mime_types)
 values (
-  'safety-photos',
-  'safety-photos',
-  false,
-  10485760, -- 10 MB, same as the table check
-  array['image/jpeg', 'image/png', 'image/webp']
+'safety-photos',
+'safety-photos',
+false,
+10485760, -- 10 MB, same as the table check
+array['image/jpeg', 'image/png', 'image/webp']
 );
 
 -- Upload only into your own top-level folder: {your_user_id}/...
 create policy "storage: framer uploads to own folder"
-  on storage.objects for insert
-  to authenticated
-  with check (
-    bucket_id = 'safety-photos'
-    and (storage.foldername(name))[1] = (select auth.uid())::text
-    and (select public.is_active_user())
-  );
+on storage.objects for insert
+to authenticated
+with check (
+bucket_id = 'safety-photos'
+and (storage.foldername(name))[1] = (select auth.uid())::text
+and (select public.is_active_user())
+);
 
 -- Read your own folder, or anything if admin.
 create policy "storage: read own folder or admin"
-  on storage.objects for select
-  to authenticated
-  using (
-    bucket_id = 'safety-photos'
-    and (
-      ((storage.foldername(name))[1] = (select auth.uid())::text
-        and (select public.is_active_user()))
-      or (select public.is_admin())
-    )
-  );
+on storage.objects for select
+to authenticated
+using (
+bucket_id = 'safety-photos'
+and (
+((storage.foldername(name))[1] = (select auth.uid())::text
+and (select public.is_active_user()))
+or (select public.is_admin())
+)
+);
 
 -- Only admins can replace or remove stored photos.
 create policy "storage: admin updates"
-  on storage.objects for update
-  to authenticated
-  using (bucket_id = 'safety-photos' and (select public.is_admin()))
-  with check (bucket_id = 'safety-photos' and (select public.is_admin()));
+on storage.objects for update
+to authenticated
+using (bucket_id = 'safety-photos' and (select public.is_admin()))
+with check (bucket_id = 'safety-photos' and (select public.is_admin()));
 
 create policy "storage: admin deletes"
-  on storage.objects for delete
-  to authenticated
-  using (bucket_id = 'safety-photos' and (select public.is_admin()));
+on storage.objects for delete
+to authenticated
+using (bucket_id = 'safety-photos' and (select public.is_admin()));
 
 /*
 Summary helper for active sites with no valid form on a given date
@@ -668,5 +689,6 @@ as $$
   order by st.name;
 $$;
 
-revoke execute on function public.sites_without_submission(date) from public, anon;
+revoke execute on function public.sites_without_submission(date) from public,
+anon;
 grant  execute on function public.sites_without_submission(date) to authenticated;
