@@ -1,8 +1,11 @@
-import { useActionState, useState } from "react";
+import { useState, type SubmitEvent } from "react";
 import type { AuthError } from "@supabase/supabase-js";
 import { supabase } from "../../lib/supabase";
 import rasMark from "../../assets/ras-mark-white.webp";
-import { Eye, EyeOff, CircleAlert, LoaderCircle } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
+import { Button } from "../../components/Button";
+import { ErrorMessage } from "../../components/ErrorMessage";
+import { TextInput } from "../../components/TextInput";
 
 /// Used for returning a message based on the error code
 function signInErrorMessage(error: AuthError) {
@@ -56,18 +59,22 @@ function BrandPanel() {
 /// Represents the... login form
 function LoginForm() {
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [pending, setPending] = useState(false);
 
-  const [error, signIn, pending] = useActionState<string | null, FormData>(
-    async (_prev, formData) => {
-      const { error } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
-        password: String(formData.get("password") ?? ""),
-      });
-      return error ? signInErrorMessage(error) : null;
-    },
-    null,
-  );
+  // On success, App.tsx hears the new session and swaps to the dashboard.
+  async function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setPending(true);
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password,
+    });
+    setError(error ? signInErrorMessage(error) : null);
+    setPending(false);
+  }
 
   return (
     <div className="w-full max-w-sm">
@@ -78,7 +85,7 @@ function LoginForm() {
         Use the email and password the office set up for you.
       </p>
 
-      <form action={signIn} className="mt-8 space-y-5">
+      <form onSubmit={handleSubmit} className="mt-8 space-y-5">
         <div>
           <label
             htmlFor="email"
@@ -86,7 +93,7 @@ function LoginForm() {
           >
             Email
           </label>
-          <input
+          <TextInput
             id="email"
             name="email"
             type="email"
@@ -95,8 +102,7 @@ function LoginForm() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            // aria-invalid={error ? true : undefined}
-            className="mt-1.5 block h-12 w-full rounded-md border border-ras-ink/20 bg-white px-3.5 text-base text-ras-ink shadow-xs transition placeholder:text-ras-ink/40 focus:border-ras-green focus:ring-3 focus:ring-ras-green/20 focus:outline-none aria-invalid:border-red-600"
+            className="mt-1.5"
             placeholder="you@example.com"
           />
         </div>
@@ -109,20 +115,20 @@ function LoginForm() {
             Password
           </label>
           <div className="relative mt-1.5">
-            <input
+            <TextInput
               id="password"
               name="password"
               type={showPassword ? "text" : "password"}
               autoComplete="current-password"
               required
-              // aria-invalid={error ? true : undefined}
-              className="block h-12 w-full rounded-md border border-ras-ink/20 bg-white pr-12 pl-3.5 text-base text-ras-ink shadow-xs transition focus:border-ras-green focus:ring-3 focus:ring-ras-green/20 focus:outline-none aria-invalid:border-red-600"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="pr-12"
             />
             <button
               type="button"
-              onClick={() => setShowPassword((v) => !v)}
-              // aria-label={showPassword ? 'Hide password' : 'Show password'}
-              // aria-pressed={showPassword}
+              onClick={() => setShowPassword(!showPassword)}
+              aria-label={showPassword ? "Hide password" : "Show password"}
               className="absolute inset-y-0 right-0 flex w-12 items-center justify-center rounded-r-md text-ras-ink/50 transition hover:text-ras-green focus-visible:ring-3 focus-visible:ring-ras-green/30 focus-visible:outline-none"
             >
               {showPassword ? (
@@ -134,29 +140,11 @@ function LoginForm() {
           </div>
         </div>
 
-        {error && (
-          <p
-            role="alert"
-            className="flex items-start gap-2 rounded-md border border-red-200 bg-red-50 px-3.5 py-3 text-sm text-red-800"
-          >
-            <CircleAlert
-              aria-hidden="true"
-              className="mt-0.5 size-4 shrink-0"
-            />
-            {error}
-          </p>
-        )}
+        {error && <ErrorMessage>{error}</ErrorMessage>}
 
-        <button
-          type="submit"
-          disabled={pending}
-          className="flex h-12 w-full items-center justify-center gap-2 rounded-md bg-ras-green font-display text-lg font-semibold tracking-wider text-white uppercase shadow-sm transition hover:bg-ras-green-dark focus-visible:ring-3 focus-visible:ring-ras-green/40 focus-visible:ring-offset-2 focus-visible:outline-none active:translate-y-px disabled:cursor-wait disabled:opacity-70"
-        >
-          {pending && (
-            <LoaderCircle aria-hidden="true" className="size-5 animate-spin" />
-          )}
+        <Button type="submit" pending={pending}>
           {pending ? "Signing in…" : "Sign in"}
-        </button>
+        </Button>
       </form>
 
       <p className="mt-8 border-t border-ras-ink/10 pt-6 text-sm text-ras-ink/70">

@@ -12,5 +12,15 @@ export function submitWindowOpen() {
   return hour >= 5 && hour < 17
 }
 
+/// Today in Pacific time for display, e.g. "Monday, October 5, 2026".
+export const formatTodayPacific = () =>
+  new Date().toLocaleDateString('en-CA', {
+    timeZone: TIMEZONE,
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  })
+
 export const formatPacificTime = (iso: string) =>
   new Date(iso).toLocaleTimeString('en-CA', { timeZone: TIMEZONE, hour: 'numeric', minute: '2-digit' })

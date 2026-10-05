@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Sign-in page with email and password, styled in RAS brand colours. Accounts are created by an admin; there's no self sign-up.
 - Tailwind CSS v4 with RAS brand colour and font settings.
+- Signed-in dashboard with the daily site safety form: site and date, PPE and site checklist, notes, and photo attachments (JPG, PNG or WebP, up to 10 MB each). The form validates and confirms on submit but doesn't save anything yet, and the site list is placeholder data.
+- Test data: four sites, four users (one admin, one deactivated) and their past submissions in `supabase/seed.sql`, plus photos for those submissions uploaded with `npm run seed:photos`.
 
 ### Removed
 - Vite starter page and its assets.
