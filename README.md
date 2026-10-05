@@ -33,9 +33,6 @@ Commits follow [Conventional Commits 1.0.0](https://www.conventionalcommits.org/
 Mark a breaking change with `!` after the type or scope (`feat(auth)!: drop magic links`),
 or with a `BREAKING CHANGE:` footer.
 
-A [husky](https://typicode.github.io/husky/) `commit-msg` hook runs [commitlint](https://commitlint.js.org/)
-and rejects messages that don't follow this format. Hooks install automatically on `npm install`.
-
 ### Branch names
 
 Branches follow [Conventional Branch](https://conventional-branch.github.io/): `<type>/<description>`.
