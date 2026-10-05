@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - Vite starter page and its assets.
+- `site_submission_status()` database function. It only made sense when a site shared one form per day.
+
+### Fixed
+- Every framer on a site now submits their own safety form. Previously only one form per site per day was accepted, so the rest of the crew couldn't submit. Each framer can have one active form per site per day.
 
 ## [0.1.0] - 2026-10-04
 

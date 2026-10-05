@@ -41,8 +41,8 @@ export function DashboardPage({ session }: { session: Session }) {
           Daily safety check
         </h1>
         <p className="mt-2 max-w-xl text-ras-ink/70">
-          One form per site per day. Check your crew's PPE and the site before
-          work starts.
+          Fill in your own form for each site you work on today. Check your PPE
+          and the site before work starts.
         </p>
 
         <div className="mt-8">
