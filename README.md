@@ -8,7 +8,7 @@ React + Vite + TypeScript, on a hosted Supabase project.
 
 You need your own Supabase project. The free tier is fine.
 
-### 1. Tools
+### 1. Tools (OPTIONAL YOU DONT NEED TO DO THIS, ONLY IF YOU USE NIX)
 
 With Nix and direnv, from the repo folder:
 
