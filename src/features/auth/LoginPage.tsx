@@ -24,7 +24,7 @@ function signInErrorMessage(error: AuthError) {
 /// Represents the left-hand green section
 function BrandPanel() {
   return (
-    <aside className="relative overflow-hidden bg-ras-green bg-studs text-white">
+    <aside className="relative overflow-hidden bg-ras-brand bg-studs text-white">
       <div className="relative flex h-full flex-col px-6 pt-10 pb-8 sm:px-10 lg:px-12 lg:pt-16 lg:pb-12">
         <img
           src={rasMark}

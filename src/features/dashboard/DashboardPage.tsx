@@ -79,7 +79,7 @@ export function DashboardPage({ session }: { session: Session }) {
 
   return (
     <div className="min-h-dvh">
-      <header className="bg-ras-green bg-studs text-white">
+      <header className="bg-ras-brand bg-studs text-white">
         <div className="mx-auto flex h-16 max-w-4xl items-center gap-3 px-4 sm:px-6">
           <img src={rasMark} alt="RAS" className="h-8 w-auto" />
           <span className="hidden font-display text-sm font-semibold tracking-[0.2em] text-white/80 uppercase sm:block">

@@ -36,7 +36,7 @@ function SubmissionCard({
       <button
         type="button"
         onClick={onOpen}
-        className={`flex w-full items-center gap-3 rounded-lg border bg-white p-3 text-left shadow-xs transition hover:border-ras-green/50 focus-visible:ring-3 focus-visible:ring-ras-green/30 focus-visible:outline-none ${
+        className={`flex w-full items-center gap-3 rounded-lg border bg-ras-surface p-3 text-left shadow-xs transition hover:border-ras-green/50 focus-visible:ring-3 focus-visible:ring-ras-green/30 focus-visible:outline-none ${
           submission.flagged
             ? "border-dashed border-ras-ink/25 opacity-70"
             : "border-ras-ink/10"
@@ -76,7 +76,7 @@ function SubmissionCard({
               No issues
             </span>
           ) : (
-            <span className="mt-1 flex items-center gap-1.5 text-sm font-semibold text-amber-800">
+            <span className="mt-1 flex items-center gap-1.5 text-sm font-semibold text-ras-slate">
               <TriangleAlert aria-hidden="true" className="size-4 shrink-0" />
               <span className="truncate">Issues: {issues.join(", ")}</span>
             </span>

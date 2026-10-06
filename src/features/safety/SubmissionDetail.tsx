@@ -8,7 +8,7 @@ import type { MySubmission } from "./loadMySubmissions";
 
 function Panel({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="rounded-lg border border-ras-ink/10 bg-white p-5 shadow-xs sm:p-6">
+    <section className="rounded-lg border border-ras-ink/10 bg-ras-surface p-5 shadow-xs sm:p-6">
       <h2 className="mb-4 font-display text-xl font-bold tracking-wide text-ras-ink uppercase">
         {title}
       </h2>
@@ -17,8 +17,8 @@ function Panel({ title, children }: { title: string; children: ReactNode }) {
   );
 }
 
-/// Flags the user's own check as incorrect, after they confirm. A framer can't
-/// undo this; only a supervisor can unflag (see set_submission_flag()).
+/// Flags the user's own check as incorrect, after they confirm.
+// A framer can't undo this; only a supervisor can
 function FlagSection({
   submissionId,
   onFlagged,
@@ -55,7 +55,7 @@ function FlagSection({
       </p>
 
       {confirming ? (
-        <div className="mt-4 rounded-md border border-amber-300 bg-amber-50 p-4 text-amber-900">
+        <div className="mt-4 rounded-md border border-ras-slate/30 bg-ras-slate/10 p-4 text-ras-ink">
           <p className="font-semibold">Flag this check as incorrect?</p>
           <p className="mt-1 text-sm">
             You can't undo this. Only a supervisor can unflag it.
@@ -73,7 +73,7 @@ function FlagSection({
               type="button"
               disabled={flagging}
               onClick={() => setConfirming(false)}
-              className="rounded-sm px-2 py-2.5 text-sm font-semibold hover:underline focus-visible:ring-3 focus-visible:ring-amber-400/40 focus-visible:outline-none"
+              className="rounded-sm px-2 py-2.5 text-sm font-semibold hover:underline focus-visible:ring-3 focus-visible:ring-ras-slate/40 focus-visible:outline-none"
             >
               Cancel
             </button>
@@ -112,7 +112,7 @@ export function SubmissionDetail({
   return (
     <div className="space-y-5">
       {submission.flagged && (
-        <p className="flex items-start gap-2 rounded-md border border-ras-ink/20 bg-white px-3.5 py-3 text-sm text-ras-ink/80">
+        <p className="flex items-start gap-2 rounded-md border border-ras-ink/20 bg-ras-surface px-3.5 py-3 text-sm text-ras-ink/80">
           <Flag aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
           This check was flagged as incorrect. Only a supervisor can unflag it.
         </p>
@@ -126,7 +126,7 @@ export function SubmissionDetail({
             No issues
           </p>
         ) : (
-          <p className="flex items-center gap-1.5 font-semibold text-amber-800">
+          <p className="flex items-center gap-1.5 font-semibold text-ras-slate">
             <TriangleAlert aria-hidden="true" className="size-5 shrink-0" />
             {issueCount === 1 ? "1 issue" : `${issueCount} issues`}
           </p>
@@ -146,7 +146,7 @@ export function SubmissionDetail({
                   >
                     <span className="text-ras-ink">{item.label}</span>
                     {submission.issues[item.key] ? (
-                      <span className="flex shrink-0 items-center gap-1.5 text-sm font-semibold text-amber-800">
+                      <span className="flex shrink-0 items-center gap-1.5 text-sm font-semibold text-ras-slate">
                         <TriangleAlert aria-hidden="true" className="size-4" />
                         Issue
                       </span>

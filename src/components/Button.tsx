@@ -6,9 +6,9 @@ const base =
 
 const variants = {
   primary:
-    "h-12 w-full bg-ras-green font-display text-lg font-semibold tracking-wider text-white uppercase shadow-sm hover:bg-ras-green-dark focus-visible:ring-ras-green/40 focus-visible:ring-offset-2 active:translate-y-px disabled:cursor-wait",
+    "h-12 w-full bg-ras-brand font-display text-lg font-semibold tracking-wider text-white uppercase shadow-sm hover:bg-ras-brand-dark focus-visible:ring-ras-green/40 focus-visible:ring-offset-2 active:translate-y-px disabled:cursor-wait",
   outline:
-    "border border-ras-green px-5 py-2.5 font-semibold text-ras-green hover:bg-ras-green-tint focus-visible:ring-ras-green/30",
+    "border border-ras-green px-5 py-2.5 font-semibold text-ras-green hover:bg-ras-green/10 focus-visible:ring-ras-green/30",
 };
 
 type ButtonProps = ComponentProps<"button"> & {

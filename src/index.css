@@ -1,15 +1,50 @@
 @import 'tailwindcss';
 
-/* Brand tokens from rasltd.ca's Squarespace theme (accent = hsl(160 91% 17%)). */
-@theme {
+/*
+Colours, from rasltd.ca: RAS green hsl(160 91% 17%), charcoal ink, slate and
+light greys. There's no orange or yellow in the brand, so issues and warnings
+use slate.
+
+Each colour is a CSS variable with a light value and a dark value. The dark
+values apply when the device is set to dark mode. Classes like `text-ras-ink`
+or `border-ras-ink/10` read the variable, so components need no `dark:` classes.
+*/
+:root {
+  --ras-mist: #f7f7f7; /* page background */
+  --ras-surface: #ffffff; /* cards, inputs */
+  --ras-ink: #2a2829; /* text; lighter text and borders use /70, /10 and so on */
+  --ras-green: #045339; /* green text, borders, icons and focus rings */
+  --ras-slate: #4a5464; /* issues and warnings */
+  --ras-error: #991b1b; /* errors */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ras-mist: #1a1919;
+    --ras-surface: #252424;
+    --ras-ink: #efedec;
+    --ras-green: #5cbf98; /* lighter so green text stays readable on dark */
+    --ras-slate: #aab4c3;
+    --ras-error: #fca5a5;
+  }
+}
+
+/* `inline` makes the classes use the variables above, so they follow the theme. */
+@theme inline {
   --font-sans: 'Barlow', ui-sans-serif, system-ui, sans-serif;
   --font-display: 'Barlow Semi Condensed', 'Barlow', ui-sans-serif, system-ui, sans-serif;
 
-  --color-ras-green: #045339;
-  --color-ras-green-dark: #033b29;
-  --color-ras-green-tint: #e7f0ec;
-  --color-ras-ink: #2a2829;
-  --color-ras-mist: #f7f7f7;
+  --color-ras-mist: var(--ras-mist);
+  --color-ras-surface: var(--ras-surface);
+  --color-ras-ink: var(--ras-ink);
+  --color-ras-green: var(--ras-green);
+  --color-ras-slate: var(--ras-slate);
+  --color-ras-error: var(--ras-error);
+
+  /* The solid RAS green behind white text (header, main buttons, step
+     numbers). The same in both themes. */
+  --color-ras-brand: #045339;
+  --color-ras-brand-dark: #033b29;
 }
 
 /* Faint wall studs for the brand panel */
@@ -22,8 +57,9 @@
 }
 
 @layer base {
+  /* Lets the browser draw dark checkboxes, date pickers and scrollbars in dark mode. */
   :root {
-    color-scheme: light;
+    color-scheme: light dark;
   }
 
   body {

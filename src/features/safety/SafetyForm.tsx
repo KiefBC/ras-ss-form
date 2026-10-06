@@ -26,9 +26,9 @@ function Section({
   children: ReactNode;
 }) {
   return (
-    <section className="rounded-lg border border-ras-ink/10 bg-white p-5 shadow-xs sm:p-6">
+    <section className="rounded-lg border border-ras-ink/10 bg-ras-surface p-5 shadow-xs sm:p-6">
       <header className="mb-5 flex items-start gap-3">
-        <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-ras-green font-display text-base font-bold text-white">
+        <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-ras-brand font-display text-base font-bold text-white">
           {step}
         </span>
         <div>
@@ -131,7 +131,7 @@ export function SafetyForm({ workerId, workerName, onDone }: SafetyFormProps) {
     return (
       <div
         role="status"
-        className="rounded-lg border border-ras-green/30 bg-white p-6 text-center shadow-xs sm:p-10"
+        className="rounded-lg border border-ras-green/30 bg-ras-surface p-6 text-center shadow-xs sm:p-10"
       >
         <CircleCheck
           aria-hidden="true"
@@ -141,7 +141,7 @@ export function SafetyForm({ workerId, workerName, onDone }: SafetyFormProps) {
           Safety check submitted
         </h2>
         {failedPhotos > 0 && (
-          <p className="mx-auto mt-4 max-w-md rounded-md border border-amber-300 bg-amber-50 px-3.5 py-3 text-sm text-amber-900">
+          <p className="mx-auto mt-4 max-w-md rounded-md border border-ras-slate/30 bg-ras-slate/10 px-3.5 py-3 text-sm text-ras-ink">
             {failedPhotos === 1 ? "1 photo" : `${failedPhotos} photos`} didn't
             upload. The rest of your check was saved.
           </p>
@@ -161,7 +161,7 @@ export function SafetyForm({ workerId, workerName, onDone }: SafetyFormProps) {
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-5">
       {!submitWindowOpen() && (
-        <p className="flex items-start gap-2 rounded-md border border-amber-300 bg-amber-50 px-3.5 py-3 text-sm text-amber-900">
+        <p className="flex items-start gap-2 rounded-md border border-ras-slate/30 bg-ras-slate/10 px-3.5 py-3 text-sm text-ras-ink">
           <Clock aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
           Forms are accepted between 5:00am and 5:00pm. You can fill this in,
           but it won't be accepted outside those hours.
@@ -235,7 +235,7 @@ export function SafetyForm({ workerId, workerName, onDone }: SafetyFormProps) {
           <label
             className={`flex cursor-pointer items-center gap-3 rounded-md border-2 p-4 transition ${
               noIssues
-                ? "border-ras-green bg-ras-green-tint"
+                ? "border-ras-green bg-ras-green/10"
                 : "border-ras-ink/15 hover:border-ras-green/50"
             }`}
           >
@@ -273,7 +273,7 @@ export function SafetyForm({ workerId, workerName, onDone }: SafetyFormProps) {
                       <label
                         className={`flex cursor-pointer items-center gap-3 rounded-md border px-3.5 py-3 transition ${
                           issues[item.key]
-                            ? "border-amber-400 bg-amber-50"
+                            ? "border-ras-slate bg-ras-slate/10"
                             : "border-ras-ink/15 hover:border-ras-ink/30"
                         }`}
                       >
@@ -283,7 +283,7 @@ export function SafetyForm({ workerId, workerName, onDone }: SafetyFormProps) {
                           onChange={(e) =>
                             toggleIssue(item.key, e.target.checked)
                           }
-                          className="size-5 shrink-0 accent-amber-600"
+                          className="size-5 shrink-0 accent-ras-slate"
                         />
                         <span>
                           <span className="block font-medium text-ras-ink">
@@ -320,7 +320,7 @@ export function SafetyForm({ workerId, workerName, onDone }: SafetyFormProps) {
           disabled={submitting}
           onChange={(e) => setNotes(e.target.value)}
           placeholder="e.g. Rope on the north scaffold is frayed, tagged out and replaced."
-          className="block w-full rounded-md border bg-white px-3.5 py-3 text-base text-ras-ink shadow-xs transition focus:border-ras-green focus:ring-3 focus:ring-ras-green/20 focus:outline-none"
+          className="block w-full rounded-md border border-ras-ink/20 bg-ras-surface px-3.5 py-3 text-base text-ras-ink shadow-xs placeholder:text-ras-ink/40 transition focus:border-ras-green focus:ring-3 focus:ring-ras-green/20 focus:outline-none"
         />
       </Section>
 

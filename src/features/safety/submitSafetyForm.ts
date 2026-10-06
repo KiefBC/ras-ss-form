@@ -24,6 +24,7 @@ const EXTENSIONS: { [mimeType: string]: string } = {
 export async function submitSafetyForm(
   input: SafetyFormInput,
 ): Promise<{ failedPhotos: number }> {
+  // Save the form and get its id back.
   // The database decides whether it's allowed (RLS)
   const notes = input.notes.trim();
   const submission: TablesInsert<"submissions"> = {

@@ -33,7 +33,7 @@ export function PhotoPicker({ photos, onChange, disabled }: PhotoPickerProps) {
   return (
     <div>
       <label
-        className={`inline-flex h-12 cursor-pointer items-center gap-2 rounded-md border border-ras-green px-4 font-semibold text-ras-green transition hover:bg-ras-green-tint has-focus-visible:ring-3 has-focus-visible:ring-ras-green/30 ${disabled ? "pointer-events-none opacity-50" : ""}`}
+        className={`inline-flex h-12 cursor-pointer items-center gap-2 rounded-md border border-ras-green px-4 font-semibold text-ras-green transition hover:bg-ras-green/10 has-focus-visible:ring-3 has-focus-visible:ring-ras-green/30 ${disabled ? "pointer-events-none opacity-50" : ""}`}
       >
         <ImagePlus aria-hidden="true" className="size-5" />
         Add photos
@@ -57,7 +57,7 @@ export function PhotoPicker({ photos, onChange, disabled }: PhotoPickerProps) {
 
       {photos.length > 0 && (
         // PER PHOTO
-        <ul className="mt-4 divide-y divide-ras-ink/10 rounded-md border">
+        <ul className="mt-4 divide-y divide-ras-ink/10 rounded-md border border-ras-ink/20">
           {photos.map((photo, i) => (
             <li
               key={`${i}-${photo.name}`}
@@ -74,7 +74,7 @@ export function PhotoPicker({ photos, onChange, disabled }: PhotoPickerProps) {
                 onClick={() => onChange(photos.filter((p) => p !== photo))}
                 disabled={disabled}
                 aria-label={`Remove ${photo.name}`}
-                className="flex size-8 items-center justify-center rounded-full text-ras-ink/50 transition hover:bg-red-50 hover:text-red-700 focus-visible:ring-3 focus-visible:ring-ras-green/30 focus-visible:outline-none"
+                className="flex size-8 items-center justify-center rounded-full text-ras-ink/50 transition hover:bg-ras-error/10 hover:text-ras-error focus-visible:ring-3 focus-visible:ring-ras-green/30 focus-visible:outline-none"
               >
                 <X aria-hidden="true" className="size-4" />
               </button>
