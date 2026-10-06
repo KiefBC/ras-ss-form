@@ -1,21 +1,13 @@
 @import 'tailwindcss';
 
-/*
-Colours, from rasltd.ca: RAS green hsl(160 91% 17%), charcoal ink, slate and
-light greys. There's no orange or yellow in the brand, so issues and warnings
-use slate.
-
-Each colour is a CSS variable with a light value and a dark value. The dark
-values apply when the device is set to dark mode. Classes like `text-ras-ink`
-or `border-ras-ink/10` read the variable, so components need no `dark:` classes.
-*/
 :root {
   --ras-mist: #f7f7f7; /* page background */
   --ras-surface: #ffffff; /* cards, inputs */
   --ras-ink: #2a2829; /* text; lighter text and borders use /70, /10 and so on */
   --ras-green: #045339; /* green text, borders, icons and focus rings */
-  --ras-slate: #4a5464; /* issues and warnings */
+  --ras-slate: #4a5464; /* warnings */
   --ras-error: #991b1b; /* errors */
+  --ras-warning: rgb(250 204 21 / 0.3);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -26,10 +18,10 @@ or `border-ras-ink/10` read the variable, so components need no `dark:` classes.
     --ras-green: #5cbf98; /* lighter so green text stays readable on dark */
     --ras-slate: #aab4c3;
     --ras-error: #fca5a5;
+    --ras-warning: rgb(250 204 21 / 0.18); /* weaker, or it turns muddy on dark */
   }
 }
 
-/* `inline` makes the classes use the variables above, so they follow the theme. */
 @theme inline {
   --font-sans: 'Barlow', ui-sans-serif, system-ui, sans-serif;
   --font-display: 'Barlow Semi Condensed', 'Barlow', ui-sans-serif, system-ui, sans-serif;
@@ -40,6 +32,7 @@ or `border-ras-ink/10` read the variable, so components need no `dark:` classes.
   --color-ras-green: var(--ras-green);
   --color-ras-slate: var(--ras-slate);
   --color-ras-error: var(--ras-error);
+  --color-ras-warning: var(--ras-warning);
 
   /* The solid RAS green behind white text (header, main buttons, step
      numbers). The same in both themes. */
@@ -57,7 +50,6 @@ or `border-ras-ink/10` read the variable, so components need no `dark:` classes.
 }
 
 @layer base {
-  /* Lets the browser draw dark checkboxes, date pickers and scrollbars in dark mode. */
   :root {
     color-scheme: light dark;
   }

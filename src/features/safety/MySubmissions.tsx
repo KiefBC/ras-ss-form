@@ -76,7 +76,7 @@ function SubmissionCard({
               No issues
             </span>
           ) : (
-            <span className="mt-1 flex items-center gap-1.5 text-sm font-semibold text-ras-slate">
+            <span className="mt-1 flex w-fit max-w-full items-center gap-1.5 rounded-sm bg-ras-warning px-1.5 py-0.5 text-sm font-semibold text-ras-ink">
               <TriangleAlert aria-hidden="true" className="size-4 shrink-0" />
               <span className="truncate">Issues: {issues.join(", ")}</span>
             </span>

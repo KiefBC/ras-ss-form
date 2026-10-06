@@ -57,7 +57,7 @@ export function PhotoPicker({ photos, onChange, disabled }: PhotoPickerProps) {
 
       {photos.length > 0 && (
         // PER PHOTO
-        <ul className="mt-4 divide-y divide-ras-ink/10 rounded-md border border-ras-ink/20">
+        <ul className="mt-4 divide-y divide-ras-ink/10 rounded-md border">
           {photos.map((photo, i) => (
             <li
               key={`${i}-${photo.name}`}

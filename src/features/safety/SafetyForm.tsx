@@ -161,7 +161,7 @@ export function SafetyForm({ workerId, workerName, onDone }: SafetyFormProps) {
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-5">
       {!submitWindowOpen() && (
-        <p className="flex items-start gap-2 rounded-md border border-ras-slate/30 bg-ras-slate/10 px-3.5 py-3 text-sm text-ras-ink">
+        <p className="flex items-start gap-2 rounded-md bg-ras-warning px-3.5 py-3 text-sm text-ras-ink">
           <Clock aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
           Forms are accepted between 5:00am and 5:00pm. You can fill this in,
           but it won't be accepted outside those hours.

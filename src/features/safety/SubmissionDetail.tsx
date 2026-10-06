@@ -126,7 +126,7 @@ export function SubmissionDetail({
             No issues
           </p>
         ) : (
-          <p className="flex items-center gap-1.5 font-semibold text-ras-slate">
+          <p className="flex w-fit items-center gap-1.5 rounded-sm bg-ras-warning px-2 py-0.5 font-semibold text-ras-ink">
             <TriangleAlert aria-hidden="true" className="size-5 shrink-0" />
             {issueCount === 1 ? "1 issue" : `${issueCount} issues`}
           </p>
@@ -146,7 +146,7 @@ export function SubmissionDetail({
                   >
                     <span className="text-ras-ink">{item.label}</span>
                     {submission.issues[item.key] ? (
-                      <span className="flex shrink-0 items-center gap-1.5 text-sm font-semibold text-ras-slate">
+                      <span className="flex shrink-0 items-center gap-1.5 rounded-sm bg-ras-warning px-1.5 py-0.5 text-sm font-semibold text-ras-ink">
                         <TriangleAlert aria-hidden="true" className="size-4" />
                         Issue
                       </span>
