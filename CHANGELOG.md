@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [UNRELEASED]
 
+## [0.3.0] - 2026-10-06
+
 ### Added
 - Supervisor dashboard, built for desktop screens. Admins now land on it instead of the framer's home screen. A table lists everyone's safety checks, newest first, with the worker, site, date and time, status (no issues, which items had issues, or flagged as incorrect) and number of photos. Filter by site, worker and date range; it starts on the last 7 days. "Who submitted, by site" shows the people who filed a form on each site in those dates, and active sites with no forms say so. Click a row to see the checklist and notes side by side, with the photos full width underneath.
 - "Who did not submit" table on the supervisor dashboard, beside the submissions table on wide screens and above it on narrower ones. It lists every active framer with no form on the "To" date (today by default), with the date of their last form before that day, so supervisors can see who hasn't filled in their safety form. Flagged forms don't count, admins aren't listed, and the site and worker filters don't change it. When nobody's missing it says "Everyone has submitted".
@@ -54,5 +56,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Public sign-up is disabled; only admins create accounts.
 
 [Unreleased]: https://github.com/KiefBC/ras-ss-form/compare/v0.2.0...HEAD
+[0.3.0]: https://github.com/KiefBC/ras-ss-form/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/KiefBC/ras-ss-form/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/KiefBC/ras-ss-form/releases/tag/v0.1.0

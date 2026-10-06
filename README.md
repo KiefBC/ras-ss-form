@@ -4,6 +4,8 @@ Daily site safety forms for RAS framing crews. Framers fill in a form for the si
 
 React + Vite + TypeScript, on a hosted Supabase project.
 
+ERD is located: [HERE](docs/ERD%20Diagram.pdf)
+
 ## Setup
 
 You need your own Supabase project. The free tier is fine.
@@ -55,7 +57,9 @@ First create these four users in the dashboard (Authentication → Users → Add
 - `tom.nook@example.com` (becomes the admin)
 - `mario@example.com`
 - `isaac.clarke@example.com`
-- `wario@example.com` (becomes a deactivated account)
+- `wario@example.com` (becomes a deactivated account with previous submissions)
+
+**Password for all seed accounts**: `password` (yes, really)
 
 Then add the sites, profiles and past submissions:
 
