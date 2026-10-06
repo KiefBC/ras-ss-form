@@ -79,4 +79,15 @@ export const noIssuesTicked = (): Issues => ({
   hazards_issue: false,
 });
 
+/// Labels of the ticked items, in checklist order. Empty means no issues.
+export function issueLabels(issues: Issues): string[] {
+  const labels: string[] = [];
+  for (const group of CHECKLIST_GROUPS) {
+    for (const item of group.items) {
+      if (issues[item.key]) labels.push(item.label);
+    }
+  }
+  return labels;
+}
+
 export const NOTES_MAX = 2000; // matches the check constraint on submissions.notes

@@ -22,5 +22,17 @@ export const formatTodayPacific = () =>
     year: 'numeric',
   })
 
+/// A timestamp's time of day in Pacific time, e.g. "7:12 a.m.".
 export const formatPacificTime = (iso: string) =>
   new Date(iso).toLocaleTimeString('en-CA', { timeZone: TIMEZONE, hour: 'numeric', minute: '2-digit' })
+
+/// A work date (YYYY-MM-DD) for display, e.g. "Sun, Oct 4, 2026".
+/// Formatted in UTC on purpose: a bare date parses as UTC midnight, which in Pacific time is the day before.
+export const formatWorkDate = (date: string) =>
+  new Date(date).toLocaleDateString('en-CA', {
+    timeZone: 'UTC',
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })

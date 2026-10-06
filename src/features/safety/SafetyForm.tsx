@@ -1,4 +1,4 @@
-import { useState, type ReactNode, type SubmitEvent } from "react";
+import { useEffect, useState, type ReactNode, type SubmitEvent } from "react";
 import { CircleCheck, Clock } from "lucide-react";
 import { Button } from "../../components/Button";
 import { ErrorMessage } from "../../components/ErrorMessage";
@@ -10,7 +10,7 @@ import {
   noIssuesTicked,
   type IssueKey,
 } from "./checklist";
-import { PLACEHOLDER_SITES } from "./sites";
+import { loadActiveSites, type Site } from "./sites";
 import { PhotoPicker } from "./PhotoPicker";
 import { submitSafetyForm } from "./submitSafetyForm";
 
@@ -26,9 +26,9 @@ function Section({
   children: ReactNode;
 }) {
   return (
-    <section className="rounded-lg border border-ras-ink/10 bg-white p-5 shadow-xs sm:p-6">
+    <section className="rounded-lg border border-ras-ink/10 bg-ras-surface p-5 shadow-xs sm:p-6">
       <header className="mb-5 flex items-start gap-3">
-        <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-ras-green font-display text-base font-bold text-white">
+        <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-ras-brand font-display text-base font-bold text-white">
           {step}
         </span>
         <div>
@@ -45,10 +45,17 @@ function Section({
   );
 }
 
-type SafetyFormProps = { workerId: string; workerName: string };
+type SafetyFormProps = {
+  workerId: string;
+  workerName: string;
+  /// Called from the confirmation screen to go back to the dashboard.
+  onDone: () => void;
+};
 
-export function SafetyForm({ workerId, workerName }: SafetyFormProps) {
+export function SafetyForm({ workerId, workerName, onDone }: SafetyFormProps) {
   const today = todayPacific();
+  // null while loading
+  const [sites, setSites] = useState<Site[] | null>(null);
   const [siteId, setSiteId] = useState("");
   const [workDate, setWorkDate] = useState(today);
   const [issues, setIssues] = useState(noIssuesTicked);
@@ -57,8 +64,20 @@ export function SafetyForm({ workerId, workerName }: SafetyFormProps) {
   const [photos, setPhotos] = useState<File[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<"idle" | "submitting" | "done">("idle");
+  // Photos that didn't upload, shown on the confirmation screen.
+  const [failedPhotos, setFailedPhotos] = useState(0);
 
   const submitting = status === "submitting";
+
+  useEffect(() => {
+    loadActiveSites()
+      .then((rows) => setSites(rows))
+      .catch(() =>
+        setError(
+          "Couldn't load the job sites. Check your connection and refresh the page.",
+        ),
+      );
+  }, []);
 
   function toggleIssue(key: IssueKey, checked: boolean) {
     setIssues({ ...issues, [key]: checked });
@@ -86,7 +105,7 @@ export function SafetyForm({ workerId, workerName }: SafetyFormProps) {
 
     setStatus("submitting");
     try {
-      await submitSafetyForm({
+      const result = await submitSafetyForm({
         workerId,
         siteId,
         workDate,
@@ -95,31 +114,24 @@ export function SafetyForm({ workerId, workerName }: SafetyFormProps) {
         notes,
         photos,
       });
+      setFailedPhotos(result.failedPhotos);
       setStatus("done");
-    } catch {
+    } catch (err) {
+      // submitSafetyForm's errors carry a message written for the framer.
       setError(
-        "Couldn't submit the form. Check your connection and try again.",
+        err instanceof Error
+          ? err.message
+          : "Couldn't submit the form. Check your connection and try again.",
       );
       setStatus("idle");
     }
-  }
-
-  function reset() {
-    setSiteId("");
-    setWorkDate(todayPacific());
-    setIssues(noIssuesTicked());
-    setNoIssues(false);
-    setNotes("");
-    setPhotos([]);
-    setError(null);
-    setStatus("idle");
   }
 
   if (status === "done") {
     return (
       <div
         role="status"
-        className="rounded-lg border border-ras-green/30 bg-white p-6 text-center shadow-xs sm:p-10"
+        className="rounded-lg border border-ras-green/30 bg-ras-surface p-6 text-center shadow-xs sm:p-10"
       >
         <CircleCheck
           aria-hidden="true"
@@ -128,14 +140,19 @@ export function SafetyForm({ workerId, workerName }: SafetyFormProps) {
         <h2 className="mt-4 font-display text-2xl font-bold tracking-wide text-ras-ink uppercase">
           Safety check submitted
         </h2>
-        <p className="mt-2 text-xs text-ras-ink/50">Preview build</p>
+        {failedPhotos > 0 && (
+          <p className="mx-auto mt-4 max-w-md rounded-md border border-ras-slate/30 bg-ras-slate/10 px-3.5 py-3 text-sm text-ras-ink">
+            {failedPhotos === 1 ? "1 photo" : `${failedPhotos} photos`} didn't
+            upload. The rest of your check was saved.
+          </p>
+        )}
         <Button
           type="button"
           variant="outline"
-          onClick={reset}
+          onClick={onDone}
           className="mt-6"
         >
-          Start another check
+          Back to my submissions
         </Button>
       </div>
     );
@@ -144,7 +161,7 @@ export function SafetyForm({ workerId, workerName }: SafetyFormProps) {
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-5">
       {!submitWindowOpen() && (
-        <p className="flex items-start gap-2 rounded-md border border-amber-300 bg-amber-50 px-3.5 py-3 text-sm text-amber-900">
+        <p className="flex items-start gap-2 rounded-md bg-ras-warning px-3.5 py-3 text-sm text-ras-ink">
           <Clock aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
           Forms are accepted between 5:00am and 5:00pm. You can fill this in,
           but it won't be accepted outside those hours.
@@ -169,14 +186,14 @@ export function SafetyForm({ workerId, workerName }: SafetyFormProps) {
             <select
               id="site"
               value={siteId}
-              disabled={submitting}
+              disabled={submitting || sites === null}
               onChange={(e) => setSiteId(e.target.value)}
               className={`${inputClass} mt-1.5`}
             >
               <option value="" disabled>
-                Select a site…
+                {sites === null ? "Loading sites…" : "Select a site…"}
               </option>
-              {PLACEHOLDER_SITES.map((s) => (
+              {sites?.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.name}
                 </option>
@@ -218,7 +235,7 @@ export function SafetyForm({ workerId, workerName }: SafetyFormProps) {
           <label
             className={`flex cursor-pointer items-center gap-3 rounded-md border-2 p-4 transition ${
               noIssues
-                ? "border-ras-green bg-ras-green-tint"
+                ? "border-ras-green bg-ras-green/10"
                 : "border-ras-ink/15 hover:border-ras-green/50"
             }`}
           >
@@ -256,7 +273,7 @@ export function SafetyForm({ workerId, workerName }: SafetyFormProps) {
                       <label
                         className={`flex cursor-pointer items-center gap-3 rounded-md border px-3.5 py-3 transition ${
                           issues[item.key]
-                            ? "border-amber-400 bg-amber-50"
+                            ? "border-ras-slate bg-ras-slate/10"
                             : "border-ras-ink/15 hover:border-ras-ink/30"
                         }`}
                       >
@@ -266,7 +283,7 @@ export function SafetyForm({ workerId, workerName }: SafetyFormProps) {
                           onChange={(e) =>
                             toggleIssue(item.key, e.target.checked)
                           }
-                          className="size-5 shrink-0 accent-amber-600"
+                          className="size-5 shrink-0 accent-ras-slate"
                         />
                         <span>
                           <span className="block font-medium text-ras-ink">
@@ -303,7 +320,7 @@ export function SafetyForm({ workerId, workerName }: SafetyFormProps) {
           disabled={submitting}
           onChange={(e) => setNotes(e.target.value)}
           placeholder="e.g. Rope on the north scaffold is frayed, tagged out and replaced."
-          className="block w-full rounded-md border bg-white px-3.5 py-3 text-base text-ras-ink shadow-xs transition focus:border-ras-green focus:ring-3 focus:ring-ras-green/20 focus:outline-none"
+          className="block w-full rounded-md border border-ras-ink/20 bg-ras-surface px-3.5 py-3 text-base text-ras-ink shadow-xs placeholder:text-ras-ink/40 transition focus:border-ras-green focus:ring-3 focus:ring-ras-green/20 focus:outline-none"
         />
       </Section>
 
