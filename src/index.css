@@ -40,15 +40,6 @@
   --color-ras-brand-dark: #033b29;
 }
 
-/* Faint wall studs for the brand panel */
-@utility bg-studs {
-  background-image: repeating-linear-gradient(
-    90deg,
-    rgb(255 255 255 / 0.05) 0 4px,
-    transparent 4px 72px
-  );
-}
-
 @layer base {
   :root {
     color-scheme: light dark;
