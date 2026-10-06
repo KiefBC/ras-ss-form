@@ -257,7 +257,7 @@ export function AdminDashboardPage({
 
                 {/*Uses only the To date (today if it's empty). order-first puts
                    it above the submissions when they're one column*/}
-                <div className="order-first xl:order-none">
+                <div className="order-first xl:order-0">
                   <NotSubmittedTable date={filters.to || todayPacific()} />
                 </div>
               </div>
