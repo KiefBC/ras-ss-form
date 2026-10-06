@@ -1,4 +1,4 @@
-import { useState, type ReactNode, type SubmitEvent } from "react";
+import { useEffect, useState, type ReactNode, type SubmitEvent } from "react";
 import { CircleCheck, Clock } from "lucide-react";
 import { Button } from "../../components/Button";
 import { ErrorMessage } from "../../components/ErrorMessage";
@@ -10,7 +10,7 @@ import {
   noIssuesTicked,
   type IssueKey,
 } from "./checklist";
-import { PLACEHOLDER_SITES } from "./sites";
+import { loadActiveSites, type Site } from "./sites";
 import { PhotoPicker } from "./PhotoPicker";
 import { submitSafetyForm } from "./submitSafetyForm";
 
@@ -54,6 +54,8 @@ type SafetyFormProps = {
 
 export function SafetyForm({ workerId, workerName, onDone }: SafetyFormProps) {
   const today = todayPacific();
+  // null while loading
+  const [sites, setSites] = useState<Site[] | null>(null);
   const [siteId, setSiteId] = useState("");
   const [workDate, setWorkDate] = useState(today);
   const [issues, setIssues] = useState(noIssuesTicked);
@@ -62,8 +64,20 @@ export function SafetyForm({ workerId, workerName, onDone }: SafetyFormProps) {
   const [photos, setPhotos] = useState<File[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [status, setStatus] = useState<"idle" | "submitting" | "done">("idle");
+  // Photos that didn't upload, shown on the confirmation screen.
+  const [failedPhotos, setFailedPhotos] = useState(0);
 
   const submitting = status === "submitting";
+
+  useEffect(() => {
+    loadActiveSites()
+      .then((rows) => setSites(rows))
+      .catch(() =>
+        setError(
+          "Couldn't load the job sites. Check your connection and refresh the page.",
+        ),
+      );
+  }, []);
 
   function toggleIssue(key: IssueKey, checked: boolean) {
     setIssues({ ...issues, [key]: checked });
@@ -91,7 +105,7 @@ export function SafetyForm({ workerId, workerName, onDone }: SafetyFormProps) {
 
     setStatus("submitting");
     try {
-      await submitSafetyForm({
+      const result = await submitSafetyForm({
         workerId,
         siteId,
         workDate,
@@ -100,10 +114,14 @@ export function SafetyForm({ workerId, workerName, onDone }: SafetyFormProps) {
         notes,
         photos,
       });
+      setFailedPhotos(result.failedPhotos);
       setStatus("done");
-    } catch {
+    } catch (err) {
+      // submitSafetyForm's errors carry a message written for the framer.
       setError(
-        "Couldn't submit the form. Check your connection and try again.",
+        err instanceof Error
+          ? err.message
+          : "Couldn't submit the form. Check your connection and try again.",
       );
       setStatus("idle");
     }
@@ -122,7 +140,12 @@ export function SafetyForm({ workerId, workerName, onDone }: SafetyFormProps) {
         <h2 className="mt-4 font-display text-2xl font-bold tracking-wide text-ras-ink uppercase">
           Safety check submitted
         </h2>
-        <p className="mt-2 text-xs text-ras-ink/50">Preview build</p>
+        {failedPhotos > 0 && (
+          <p className="mx-auto mt-4 max-w-md rounded-md border border-amber-300 bg-amber-50 px-3.5 py-3 text-sm text-amber-900">
+            {failedPhotos === 1 ? "1 photo" : `${failedPhotos} photos`} didn't
+            upload. The rest of your check was saved.
+          </p>
+        )}
         <Button
           type="button"
           variant="outline"
@@ -163,14 +186,14 @@ export function SafetyForm({ workerId, workerName, onDone }: SafetyFormProps) {
             <select
               id="site"
               value={siteId}
-              disabled={submitting}
+              disabled={submitting || sites === null}
               onChange={(e) => setSiteId(e.target.value)}
               className={`${inputClass} mt-1.5`}
             >
               <option value="" disabled>
-                Select a site…
+                {sites === null ? "Loading sites…" : "Select a site…"}
               </option>
-              {PLACEHOLDER_SITES.map((s) => (
+              {sites?.map((s) => (
                 <option key={s.id} value={s.id}>
                   {s.name}
                 </option>
