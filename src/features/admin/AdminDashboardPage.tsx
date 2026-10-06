@@ -128,13 +128,8 @@ export function AdminDashboardPage({
 
   const firstName = name.split(" ")[0];
 
-  // Desktop first, from the lg breakpoint (1024px) up. Below that is the phone
-  // view for supervisors on site: the button, who did not submit, and the
-  // submissions as cards. "hidden lg:block" means "hide on phones".
-  // lg:min-w-6xl: on a desktop narrower than 1152px the page scrolls sideways
-  // instead of squeezing the tables.
   return (
-    <div className="min-h-dvh lg:min-w-6xl">
+    <div className="min-h-dvh">
       <AppHeader name={name} wide />
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:py-10">
@@ -223,10 +218,6 @@ export function AdminDashboardPage({
                 </div>
               </div>
 
-              {/*DESKTOP: SUBMISSIONS ON THE LEFT, WHO DID NOT SUBMIT ON THE RIGHT.
-                 PHONE: ONE COLUMN, WHO DID NOT SUBMIT FIRST. grid-cols-1 keeps
-                 that column to the screen's width, so long issue lists
-                 truncate instead of widening the page.*/}
               <div className="mt-10 grid grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-6">
                 <section>
                   <h2 className="font-display text-xl font-bold tracking-wide text-ras-ink uppercase">
@@ -265,8 +256,8 @@ export function AdminDashboardPage({
                 </section>
 
                 {/*Uses only the To date (today if it's empty). order-first puts
-                   it above the submissions on a phone*/}
-                <div className="order-first lg:order-none">
+                   it above the submissions when they're one column*/}
+                <div className="order-first xl:order-none">
                   <NotSubmittedTable date={filters.to || todayPacific()} />
                 </div>
               </div>
@@ -297,10 +288,9 @@ export function AdminDashboardPage({
           </>
         )}
 
-        {/*THE SUPERVISOR'S OWN SAFETY CHECK: the same form framers use,
-           kept to the framer page's width so it doesn't stretch*/}
+        {/*THE SUPERVISOR'S OWN SAFETY CHECK*/}
         {showForm && (
-          <div className="max-w-4xl">
+          <div className="mx-auto max-w-[53rem]">
             <BackButton onClick={closeForm}>All submissions</BackButton>
             <p className="font-display text-sm font-semibold tracking-[0.2em] text-ras-green uppercase">
               {formatTodayPacific()}
