@@ -1,9 +1,13 @@
 import { supabase } from "../../lib/supabase";
-import type { Issues } from "./checklist";
+import type { Issues } from "../safety/checklist";
+import { signPhotoUrls } from "../safety/loadMySubmissions";
 
-/// One of the signed-in user's own submissions
-export type MySubmission = {
+/// A submission in the supervisor's list
+export type AdminSubmission = {
   id: string;
+  workerId: string;
+  workerName: string;
+  siteId: string;
   siteName: string;
   workDate: string; // YYYY-MM-DD
   submittedAt: string; // ISO timestamp
@@ -13,21 +17,37 @@ export type MySubmission = {
   photoUrls: string[]; // signed URLs in upload order; empty if it has no photos
 };
 
-const RECENT_LIMIT = 30;
-const PHOTO_URL_SECONDS = 60 * 60;
+/// What the list is filtered by. An empty string means "any".
+export type SubmissionFilters = {
+  siteId: string;
+  workerId: string;
+  from: string; // YYYY-MM-DD, inclusive
+  to: string; // YYYY-MM-DD, inclusive
+};
 
-/// The worker's most recent submissions, newest first.
-export async function loadMySubmissions(
-  workerId: string,
-): Promise<MySubmission[]> {
-  const { data, error } = await supabase
+/// At most this many rows load at once. The page says so when it's hit.
+export const SUBMISSIONS_LIMIT = 500;
+
+/// Everyone's submissions that match the filters, newest first.
+/// RLS lets an admin read every submission and anyone else would get their own.
+export async function loadSubmissions(
+  filters: SubmissionFilters,
+): Promise<AdminSubmission[]> {
+  let query = supabase
     .from("submissions")
-    .select("*, sites(name), submission_photos(storage_path)")
-    .eq("worker_id", workerId)
+    .select(
+      "*, sites(name), profiles(full_name), submission_photos(storage_path)",
+    );
+  if (filters.siteId) query = query.eq("site_id", filters.siteId);
+  if (filters.workerId) query = query.eq("worker_id", filters.workerId);
+  if (filters.from) query = query.gte("work_date", filters.from);
+  if (filters.to) query = query.lte("work_date", filters.to);
+
+  const { data, error } = await query
     .order("work_date", { ascending: false })
     .order("submitted_at", { ascending: false })
     .order("created_at", { referencedTable: "submission_photos" })
-    .limit(RECENT_LIMIT);
+    .limit(SUBMISSIONS_LIMIT);
   if (error) throw error;
 
   const allPhotoPaths: string[] = [];
@@ -38,7 +58,7 @@ export async function loadMySubmissions(
   }
   const signedUrls = await signPhotoUrls(allPhotoPaths);
 
-  const submissions: MySubmission[] = [];
+  const submissions: AdminSubmission[] = [];
   for (const row of data) {
     const photoUrls: string[] = [];
     for (const photo of row.submission_photos) {
@@ -48,6 +68,9 @@ export async function loadMySubmissions(
 
     submissions.push({
       id: row.id,
+      workerId: row.worker_id,
+      workerName: row.profiles.full_name,
+      siteId: row.site_id,
       siteName: row.sites.name,
       workDate: row.work_date,
       submittedAt: row.submitted_at,
@@ -67,20 +90,4 @@ export async function loadMySubmissions(
     });
   }
   return submissions;
-}
-
-/// Signed URLs for photos in the private bucket, by storage path
-export async function signPhotoUrls(
-  paths: string[],
-): Promise<Map<string, string>> {
-  const urls = new Map<string, string>();
-  if (paths.length === 0) return urls;
-
-  const { data } = await supabase.storage
-    .from("safety-photos")
-    .createSignedUrls(paths, PHOTO_URL_SECONDS);
-  for (const item of data ?? []) {
-    if (item.path && item.signedUrl) urls.set(item.path, item.signedUrl);
-  }
-  return urls;
 }

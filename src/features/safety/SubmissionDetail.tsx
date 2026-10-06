@@ -3,7 +3,7 @@ import { CircleCheck, Flag, TriangleAlert } from "lucide-react";
 import { Button } from "../../components/Button";
 import { ErrorMessage } from "../../components/ErrorMessage";
 import { supabase } from "../../lib/supabase";
-import { CHECKLIST_GROUPS, issueLabels } from "./checklist";
+import { CHECKLIST_GROUPS, issueLabels, type Issues } from "./checklist";
 import type { MySubmission } from "./loadMySubmissions";
 
 function Panel({ title, children }: { title: string; children: ReactNode }) {
@@ -14,6 +14,106 @@ function Panel({ title, children }: { title: string; children: ReactNode }) {
       </h2>
       {children}
     </section>
+  );
+}
+
+/// Every checklist item, OK or Issue, with the issue count on top.
+export function ChecklistPanel({ issues }: { issues: Issues }) {
+  const issueCount = issueLabels(issues).length;
+
+  return (
+    <Panel title="Safety checklist">
+      {issueCount === 0 ? (
+        <p className="flex items-center gap-1.5 font-semibold text-ras-green">
+          <CircleCheck aria-hidden="true" className="size-5 shrink-0" />
+          No issues
+        </p>
+      ) : (
+        <p className="flex w-fit items-center gap-1.5 rounded-sm bg-ras-warning px-2 py-0.5 font-semibold text-ras-ink">
+          <TriangleAlert aria-hidden="true" className="size-5 shrink-0" />
+          {issueCount === 1 ? "1 issue" : `${issueCount} issues`}
+        </p>
+      )}
+
+      <div className="mt-5 grid gap-6 md:grid-cols-2">
+        {CHECKLIST_GROUPS.map((group) => (
+          <div key={group.title}>
+            <h3 className="font-display text-sm font-bold tracking-[0.15em] text-ras-ink/70 uppercase">
+              {group.title}
+            </h3>
+            <ul className="mt-1 divide-y divide-ras-ink/10">
+              {group.items.map((item) => (
+                <li
+                  key={item.key}
+                  className="flex items-center justify-between gap-3 py-2.5"
+                >
+                  <span className="text-ras-ink">{item.label}</span>
+                  {issues[item.key] ? (
+                    <span className="flex shrink-0 items-center gap-1.5 rounded-sm bg-ras-warning px-1.5 py-0.5 text-sm font-semibold text-ras-ink">
+                      <TriangleAlert aria-hidden="true" className="size-4" />
+                      Issue
+                    </span>
+                  ) : (
+                    <span className="flex shrink-0 items-center gap-1.5 text-sm font-semibold text-ras-green">
+                      <CircleCheck aria-hidden="true" className="size-4" />
+                      OK
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </Panel>
+  );
+}
+
+export function NotesPanel({ notes }: { notes: string | null }) {
+  return (
+    <Panel title="Notes">
+      {notes ? (
+        <p className="whitespace-pre-line text-ras-ink/80">{notes}</p>
+      ) : (
+        <p className="text-ras-ink/50">No notes.</p>
+      )}
+    </Panel>
+  );
+}
+
+/// The photos as square thumbnails. Tap one to open it full size in a new tab.
+export function PhotosPanel({
+  photoUrls,
+  siteName,
+}: {
+  photoUrls: string[];
+  siteName: string;
+}) {
+  return (
+    <Panel title="Photos">
+      {photoUrls.length === 0 ? (
+        <p className="text-ras-ink/50">No photos.</p>
+      ) : (
+        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {photoUrls.map((url, i) => (
+            <li key={url}>
+              <a
+                href={url}
+                target="_blank"
+                rel="noreferrer"
+                className="block overflow-hidden rounded-md focus-visible:ring-3 focus-visible:ring-ras-green/30 focus-visible:outline-none"
+              >
+                <img
+                  src={url}
+                  alt={`Photo ${i + 1} from ${siteName}`}
+                  className="aspect-square w-full bg-ras-mist object-cover"
+                />
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </Panel>
   );
 }
 
@@ -107,8 +207,6 @@ export function SubmissionDetail({
   submission,
   onFlagged,
 }: SubmissionDetailProps) {
-  const issueCount = issueLabels(submission.issues).length;
-
   return (
     <div className="space-y-5">
       {submission.flagged && (
@@ -118,87 +216,12 @@ export function SubmissionDetail({
         </p>
       )}
 
-      {/*CHECKLIST: EVERY ITEM, OK OR ISSUE*/}
-      <Panel title="Safety checklist">
-        {issueCount === 0 ? (
-          <p className="flex items-center gap-1.5 font-semibold text-ras-green">
-            <CircleCheck aria-hidden="true" className="size-5 shrink-0" />
-            No issues
-          </p>
-        ) : (
-          <p className="flex w-fit items-center gap-1.5 rounded-sm bg-ras-warning px-2 py-0.5 font-semibold text-ras-ink">
-            <TriangleAlert aria-hidden="true" className="size-5 shrink-0" />
-            {issueCount === 1 ? "1 issue" : `${issueCount} issues`}
-          </p>
-        )}
-
-        <div className="mt-5 grid gap-6 md:grid-cols-2">
-          {CHECKLIST_GROUPS.map((group) => (
-            <div key={group.title}>
-              <h3 className="font-display text-sm font-bold tracking-[0.15em] text-ras-ink/70 uppercase">
-                {group.title}
-              </h3>
-              <ul className="mt-1 divide-y divide-ras-ink/10">
-                {group.items.map((item) => (
-                  <li
-                    key={item.key}
-                    className="flex items-center justify-between gap-3 py-2.5"
-                  >
-                    <span className="text-ras-ink">{item.label}</span>
-                    {submission.issues[item.key] ? (
-                      <span className="flex shrink-0 items-center gap-1.5 rounded-sm bg-ras-warning px-1.5 py-0.5 text-sm font-semibold text-ras-ink">
-                        <TriangleAlert aria-hidden="true" className="size-4" />
-                        Issue
-                      </span>
-                    ) : (
-                      <span className="flex shrink-0 items-center gap-1.5 text-sm font-semibold text-ras-green">
-                        <CircleCheck aria-hidden="true" className="size-4" />
-                        OK
-                      </span>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-      </Panel>
-
-      <Panel title="Notes">
-        {submission.notes ? (
-          <p className="whitespace-pre-line text-ras-ink/80">
-            {submission.notes}
-          </p>
-        ) : (
-          <p className="text-ras-ink/50">No notes.</p>
-        )}
-      </Panel>
-
-      {/*PHOTOS: TAP ONE TO OPEN IT FULL SIZE IN A NEW TAB*/}
-      <Panel title="Photos">
-        {submission.photoUrls.length === 0 ? (
-          <p className="text-ras-ink/50">No photos.</p>
-        ) : (
-          <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            {submission.photoUrls.map((url, i) => (
-              <li key={url}>
-                <a
-                  href={url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="block overflow-hidden rounded-md focus-visible:ring-3 focus-visible:ring-ras-green/30 focus-visible:outline-none"
-                >
-                  <img
-                    src={url}
-                    alt={`Photo ${i + 1} from ${submission.siteName}`}
-                    className="aspect-square w-full bg-ras-mist object-cover"
-                  />
-                </a>
-              </li>
-            ))}
-          </ul>
-        )}
-      </Panel>
+      <ChecklistPanel issues={submission.issues} />
+      <NotesPanel notes={submission.notes} />
+      <PhotosPanel
+        photoUrls={submission.photoUrls}
+        siteName={submission.siteName}
+      />
 
       {!submission.flagged && (
         <FlagSection submissionId={submission.id} onFlagged={onFlagged} />

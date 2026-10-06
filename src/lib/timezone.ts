@@ -36,3 +36,11 @@ export const formatWorkDate = (date: string) =>
     day: 'numeric',
     year: 'numeric',
   })
+
+/// The date `days` days before a work date, both YYYY-MM-DD.
+/// Done in UTC, like formatWorkDate, so a daylight-saving change can't shift it.
+export function daysBefore(date: string, days: number) {
+  const d = new Date(date)
+  d.setUTCDate(d.getUTCDate() - days)
+  return d.toISOString().slice(0, 10)
+}
