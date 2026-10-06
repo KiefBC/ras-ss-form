@@ -1,6 +1,104 @@
 # RAS SS Form
 
-TBD.
+Daily site safety forms for RAS framing crews. Framers fill in a form for the site they're on, and supervisors review the submissions and photos.
+
+React + Vite + TypeScript, on a hosted Supabase project.
+
+## Setup
+
+You need your own Supabase project. The free tier is fine.
+
+### 1. Tools
+
+With Nix and direnv, from the repo folder:
+
+```bash
+direnv allow
+```
+
+This loads Node, the Supabase CLI and psql from `flake.nix`. Without direnv, run `nix develop` instead. Without Nix, install Node and the [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started) yourself.
+
+### 2. Install packages
+
+```bash
+npm install
+```
+
+### 3. Environment
+
+```bash
+cp .env.example .env.local
+```
+
+Fill in `.env.local` from your Supabase dashboard (Project Settings → API Keys and Data API):
+
+- `VITE_SUPABASE_URL`: the project URL
+- `VITE_SUPABASE_ANON_KEY`: the anon (publishable) key
+- `SUPABASE_SERVICE_ROLE_KEY`: the service role (secret) key. Only the photo seed script uses it. Keep it secret.
+
+### 4. Link and push the database
+
+```bash
+supabase login
+```
+
+```bash
+supabase link --project-ref <your-project-ref>
+```
+
+```bash
+supabase db push
+```
+
+The project ref is the `xxxx` in `https://xxxx.supabase.co`. `link` asks for your database password. `db push` creates the tables, access rules and the `safety-photos` storage bucket.
+
+Then turn off public sign-up in the dashboard: Authentication → Sign In / Providers → turn off "Allow new users to sign up". Admins create every account.
+
+### 5. Seed test data (optional)
+
+First create these four users in the dashboard (Authentication → Users → Add user → Create new user, with "Auto Confirm User" ticked). Any passwords will do.
+
+- `tom.nook@example.com` (becomes the admin)
+- `mario@example.com`
+- `isaac.clarke@example.com`
+- `wario@example.com` (becomes a deactivated account)
+
+Then add the sites, profiles and past submissions:
+
+```bash
+supabase db query --linked -f supabase/seed.sql
+```
+
+Or paste `supabase/seed.sql` into the dashboard's SQL Editor and run it.
+
+Then upload the photos for those submissions:
+
+```bash
+npm run seed:photos
+```
+
+Both seed steps are safe to run again.
+
+### 6. Run
+
+```bash
+npm run dev
+```
+
+Open the URL it prints (usually http://localhost:5173) and sign in.
+
+## Commands
+
+| Command | What it does |
+| --- | --- |
+| `npm run dev` | Start the dev server |
+| `npm run build` | Typecheck, then build to `dist/` |
+| `npm run preview` | Serve the built `dist/` |
+| `npm run lint` | Run ESLint |
+| `npm run seed:photos` | Upload the seed photos (needs `.env.local`) |
+| `supabase db push` | Apply new migrations to the linked project |
+| `supabase migration new <name>` | Create a new migration file in `supabase/migrations/` |
+| `supabase gen types typescript --linked > src/lib/database.types.ts` | Regenerate the database types after a schema change |
 
 ## Conventions
 

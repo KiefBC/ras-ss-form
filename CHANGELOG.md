@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [UNRELEASED]
 
+## [0.2.0] - 2026-10-05
+
 ### Added
 - Sign-in page with email and password, styled in RAS brand colours. Accounts are created by an admin; there's no self sign-up.
 - Tailwind CSS v4 with RAS brand colour and font settings.
@@ -14,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dashboard home screen. It greets you by the name on your profile and lists your 30 most recent safety checks as compact cards: the check's first photo, then the site, date and time, and "No issues", which items had issues, or "Flagged as incorrect". Click a card to open its details page with the full checklist (each item OK or Issue), notes, and all its photos; tap a photo to open it full size. From the details page you can flag your own check as incorrect, after confirming; only a supervisor can unflag it. "Start a safety check" opens the form, and after you submit you go back to the list.
 - Dark theme in RAS colours, used when the device is set to dark mode. Issues on submission cards and details pages, and the form's "outside 5am–5pm" notice, are shown in a soft warning yellow; other warnings use RAS slate, and dark-mode browser extensions such as Dark Reader no longer recolour the app.
 - Test data: four sites, four users (one admin, one deactivated) and their past submissions in `supabase/seed.sql`, plus photos for those submissions uploaded with `npm run seed:photos`.
+- README setup steps for running the app on your own Supabase project, and a list of the everyday commands.
 
 ### Removed
 - Vite starter page and its assets.
@@ -21,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Every framer on a site now submits their own safety form. Previously only one form per site per day was accepted, so the rest of the crew couldn't submit. Each framer can have one active form per site per day.
+- Deactivated accounts can no longer sign in, and their existing sessions end. Previously a deactivated person lost access to the data but could still sign in. Signing in to a deactivated account now shows "This account has been deactivated. Contact the office."
 
 ## [0.1.0] - 2026-10-04
 
@@ -39,5 +43,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Logged-out callers cannot execute database functions.
 - Public sign-up is disabled; only admins create accounts.
 
-[Unreleased]: https://github.com/KiefBC/ras-ss-form/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/KiefBC/ras-ss-form/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/KiefBC/ras-ss-form/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/KiefBC/ras-ss-form/releases/tag/v0.1.0
