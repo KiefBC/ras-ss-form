@@ -27,6 +27,7 @@ import {
   type AdminSubmission,
   type SubmissionFilters,
 } from "./loadSubmissions";
+import { SiteCoverageGrid } from "./SiteCoverageGrid";
 import { SubmissionCards } from "./SubmissionCards";
 import { SubmissionTable } from "./SubmissionTable";
 import { SubmittersBySite } from "./SubmittersBySite";
@@ -191,6 +192,21 @@ export function AdminDashboardPage({
           ) : (
             <>
               <div className="hidden lg:block">
+                <h2 className="mt-10 font-display text-xl font-bold tracking-wide text-ras-ink uppercase">
+                  Forms by site and day
+                </h2>
+                <p className="mt-1 text-sm text-ras-ink/70">
+                  Spot the days a site had no safety form. Flagged forms aren't
+                  counted. Hover a square for details.
+                </p>
+                <div className="mt-4">
+                  <SiteCoverageGrid
+                    sites={sites}
+                    submissions={submissions}
+                    filters={filters}
+                  />
+                </div>
+
                 <h2 className="mt-10 font-display text-xl font-bold tracking-wide text-ras-ink uppercase">
                   Who submitted, by site
                 </h2>
