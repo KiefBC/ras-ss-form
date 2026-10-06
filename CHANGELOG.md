@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Supervisor dashboard, built for desktop screens. Admins now land on it instead of the framer's home screen. A table lists everyone's safety checks, newest first, with the worker, site, date and time, status (no issues, which items had issues, or flagged as incorrect) and number of photos. Filter by site, worker and date range; it starts on the last 7 days. "Who submitted, by site" shows the people who filed a form on each site in those dates, and active sites with no forms say so. Click a row to see the checklist and notes side by side, with the photos full width underneath.
 - "Who did not submit" table beside the submissions table on the supervisor dashboard. It lists every active framer with no form on the "To" date (today by default), with the date of their last form before that day, so supervisors can see who hasn't filled in their safety form. Flagged forms don't count, admins aren't listed, and the site and worker filters don't change it. When nobody's missing it says "Everyone has submitted".
+- Supervisors can fill in their own safety check. "Start a safety check" sits on the right of the dashboard greeting and opens the same form framers use; after submitting, the submissions list reloads so the new check shows.
 
 ## [0.2.0] - 2026-10-05
 

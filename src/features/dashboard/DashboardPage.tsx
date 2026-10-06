@@ -65,7 +65,8 @@ export function DashboardPage({ session }: { session: Session }) {
   }
 
   if (name === undefined) return null;
-  if (isAdmin) return <AdminDashboardPage name={name} />;
+  if (isAdmin)
+    return <AdminDashboardPage userId={session.user.id} name={name} />;
 
   const firstName = name.split(" ")[0];
 

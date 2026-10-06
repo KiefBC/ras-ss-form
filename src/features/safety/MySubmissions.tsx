@@ -23,7 +23,6 @@ function SubmissionCard({
       ? "Today"
       : formatWorkDate(submission.workDate);
 
-  // A button can only hold inline content, so the text is in spans, not headings.
   return (
     <li>
       <button
@@ -49,7 +48,6 @@ function SubmissionCard({
           </span>
         )}
 
-        {/*min-w-0 lets long text truncate instead of widening the card*/}
         <span className="min-w-0 flex-1">
           <span className="block truncate font-display text-base font-bold tracking-wide text-ras-ink uppercase">
             {submission.siteName}

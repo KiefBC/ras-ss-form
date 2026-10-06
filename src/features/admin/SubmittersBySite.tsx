@@ -31,6 +31,7 @@ type SubmittersBySiteProps = {
 };
 
 /// One card per site listing the people who filed a form there.
+/// Active sites with no forms are shown too
 export function SubmittersBySite({
   sites,
   submissions,

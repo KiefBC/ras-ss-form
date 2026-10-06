@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from "react";
+import { Plus } from "lucide-react";
 import { AppHeader } from "../../components/AppHeader";
 import { BackButton } from "../../components/BackButton";
+import { Button } from "../../components/Button";
 import { ErrorMessage } from "../../components/ErrorMessage";
 import {
   daysBefore,
@@ -9,6 +11,7 @@ import {
   formatWorkDate,
   todayPacific,
 } from "../../lib/timezone";
+import { SafetyForm } from "../safety/SafetyForm";
 import { AdminSubmissionDetail } from "./AdminSubmissionDetail";
 import {
   loadAllSites,
@@ -27,8 +30,16 @@ import {
 import { SubmissionTable } from "./SubmissionTable";
 import { SubmittersBySite } from "./SubmittersBySite";
 
-/// The supervisor's (admin's) home, built for a desktop screen, not a phone
-export function AdminDashboardPage({ name }: { name: string }) {
+/// The supervisor's (admin's) home: everyone's submissions, filterable, with a
+/// details page for each one, and the safety form for their own check.
+/// Built for a desktop screen, not a phone.
+export function AdminDashboardPage({
+  userId,
+  name,
+}: {
+  userId: string;
+  name: string;
+}) {
   // The site and worker lists for the filters. Empty until they load.
   const [sites, setSites] = useState<SiteOption[]>([]);
   const [workers, setWorkers] = useState<WorkerOption[]>([]);
@@ -41,7 +52,7 @@ export function AdminDashboardPage({ name }: { name: string }) {
     from: daysBefore(todayPacific(), 6),
     to: todayPacific(),
   }));
-
+  // null while loading
   const [submissions, setSubmissions] = useState<AdminSubmission[] | null>(
     null,
   );
@@ -53,6 +64,8 @@ export function AdminDashboardPage({ name }: { name: string }) {
   );
   // How far down the list was scrolled when a row was opened, so "back" returns there.
   const listScrollY = useRef(0);
+  // True while the supervisor is filling in their own safety check.
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
     loadAllSites()
@@ -97,27 +110,53 @@ export function AdminDashboardPage({ name }: { name: string }) {
     window.scrollTo(0, 0);
   }
 
+  function openForm() {
+    setShowForm(true);
+    window.scrollTo(0, 0);
+  }
+
+  /// Back to the list, reloaded so a check the supervisor just submitted shows up.
+  function closeForm() {
+    setShowForm(false);
+    // A copy is a new object, so the [filters] effect runs again even though
+    // the values are the same.
+    changeFilters({ ...filters });
+    window.scrollTo(0, 0);
+  }
+
   const firstName = name.split(" ")[0];
 
+  // min-w-6xl: below 1152px wide the page scrolls sideways instead of squeezing the tables.
   return (
     <div className="min-h-dvh min-w-6xl">
       <AppHeader name={name} wide />
 
       <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
-        {/*HOME: FILTERS, WHO SUBMITTED ON EACH SITE, AND THE TABLE
-        Hidden, not removed, while a submission is open, so going back
-        keeps the filters and doesn't reload the list.*/}
-        <div hidden={openSubmission !== null}>
-          <p className="font-display text-sm font-semibold tracking-[0.2em] text-ras-green uppercase">
-            {formatTodayPacific()}
-          </p>
-          <h1 className="mt-1 font-display text-4xl font-bold tracking-wide text-ras-ink uppercase">
-            Hi, {firstName}
-          </h1>
-          <p className="mt-2 text-ras-ink/70">
-            Review your crews' safety checks. Filter by site, worker or dates,
-            and open a check to see its photos.
-          </p>
+        {/*HOME: FILTERS, WHO SUBMITTED ON EACH SITE, AND THE TABLE*/}
+        <div hidden={openSubmission !== null || showForm}>
+          {/*GREETING ON THE LEFT, START A SAFETY CHECK ON THE RIGHT*/}
+          <div className="flex items-center justify-between gap-6">
+            <div>
+              <p className="font-display text-sm font-semibold tracking-[0.2em] text-ras-green uppercase">
+                {formatTodayPacific()}
+              </p>
+              <h1 className="mt-1 font-display text-4xl font-bold tracking-wide text-ras-ink uppercase">
+                Hi, {firstName}
+              </h1>
+              <p className="mt-2 text-ras-ink/70">
+                Review your crews' safety checks. Filter by site, worker or
+                dates, and open a check to see its photos.
+              </p>
+            </div>
+            <Button
+              type="button"
+              onClick={openForm}
+              className="shrink-0 px-8 sm:w-auto"
+            >
+              <Plus aria-hidden="true" className="size-5" />
+              Start a safety check
+            </Button>
+          </div>
 
           <div className="mt-8">
             <Filters
@@ -216,6 +255,32 @@ export function AdminDashboardPage({ name }: { name: string }) {
               <AdminSubmissionDetail submission={openSubmission} />
             </div>
           </>
+        )}
+
+        {/*THE SUPERVISOR'S OWN SAFETY CHECK: the same form framers use,
+           kept to the framer page's width so it doesn't stretch*/}
+        {showForm && (
+          <div className="max-w-4xl">
+            <BackButton onClick={closeForm}>All submissions</BackButton>
+            <p className="font-display text-sm font-semibold tracking-[0.2em] text-ras-green uppercase">
+              {formatTodayPacific()}
+            </p>
+            <h1 className="mt-1 font-display text-4xl font-bold tracking-wide text-ras-ink uppercase">
+              Daily safety check
+            </h1>
+            <p className="mt-2 max-w-xl text-ras-ink/70">
+              Fill in your own form for each site you work on today. Check your
+              PPE and the site before work starts.
+            </p>
+
+            <div className="mt-8">
+              <SafetyForm
+                workerId={userId}
+                workerName={name}
+                onDone={closeForm}
+              />
+            </div>
+          </div>
         )}
       </main>
     </div>
