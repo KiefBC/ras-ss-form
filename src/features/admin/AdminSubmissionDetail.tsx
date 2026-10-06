@@ -6,7 +6,7 @@ import {
 } from "../safety/SubmissionDetail";
 import type { AdminSubmission } from "./loadSubmissions";
 
-/// One submission, laid out for a desktop screen
+/// One submission, laid out for a desktop screen and stacked in one column on a phone
 /// No flag button since flagging is the framer's action on their own check.
 export function AdminSubmissionDetail({
   submission,
@@ -22,7 +22,7 @@ export function AdminSubmissionDetail({
         </p>
       )}
 
-      <div className="grid grid-cols-[2fr_1fr] items-start gap-5">
+      <div className="grid items-start gap-5 lg:grid-cols-[2fr_1fr]">
         <ChecklistPanel issues={submission.issues} />
         <NotesPanel notes={submission.notes} />
       </div>

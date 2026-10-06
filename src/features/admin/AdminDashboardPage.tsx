@@ -27,6 +27,7 @@ import {
   type AdminSubmission,
   type SubmissionFilters,
 } from "./loadSubmissions";
+import { SubmissionCards } from "./SubmissionCards";
 import { SubmissionTable } from "./SubmissionTable";
 import { SubmittersBySite } from "./SubmittersBySite";
 
@@ -126,24 +127,29 @@ export function AdminDashboardPage({
 
   const firstName = name.split(" ")[0];
 
-  // min-w-6xl: below 1152px wide the page scrolls sideways instead of squeezing the tables.
+  // Desktop first, from the lg breakpoint (1024px) up. Below that is the phone
+  // view for supervisors on site: the button, who did not submit, and the
+  // submissions as cards. "hidden lg:block" means "hide on phones".
+  // lg:min-w-6xl: on a desktop narrower than 1152px the page scrolls sideways
+  // instead of squeezing the tables.
   return (
-    <div className="min-h-dvh min-w-6xl">
+    <div className="min-h-dvh lg:min-w-6xl">
       <AppHeader name={name} wide />
 
-      <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
-        {/*HOME: FILTERS, WHO SUBMITTED ON EACH SITE, AND THE TABLE*/}
+      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:py-10">
+        {/*HOME: FILTERS, WHO SUBMITTED ON EACH SITE, AND THE TABLES*/}
         <div hidden={openSubmission !== null || showForm}>
-          {/*GREETING ON THE LEFT, START A SAFETY CHECK ON THE RIGHT*/}
-          <div className="flex items-center justify-between gap-6">
+          {/*GREETING, WITH START A SAFETY CHECK BELOW IT ON A PHONE AND ON
+             ITS RIGHT ON A DESKTOP*/}
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
             <div>
               <p className="font-display text-sm font-semibold tracking-[0.2em] text-ras-green uppercase">
                 {formatTodayPacific()}
               </p>
-              <h1 className="mt-1 font-display text-4xl font-bold tracking-wide text-ras-ink uppercase">
+              <h1 className="mt-1 font-display text-3xl font-bold tracking-wide text-ras-ink uppercase sm:text-4xl">
                 Hi, {firstName}
               </h1>
-              <p className="mt-2 text-ras-ink/70">
+              <p className="mt-2 hidden text-ras-ink/70 lg:block">
                 Review your crews' safety checks. Filter by site, worker or
                 dates, and open a check to see its photos.
               </p>
@@ -151,14 +157,14 @@ export function AdminDashboardPage({
             <Button
               type="button"
               onClick={openForm}
-              className="shrink-0 px-8 sm:w-auto"
+              className="shrink-0 px-8 lg:w-auto"
             >
               <Plus aria-hidden="true" className="size-5" />
               Start a safety check
             </Button>
           </div>
 
-          <div className="mt-8">
+          <div className="mt-8 hidden lg:block">
             <Filters
               filters={filters}
               sites={sites}
@@ -184,23 +190,28 @@ export function AdminDashboardPage({
             </p>
           ) : (
             <>
-              <h2 className="mt-10 font-display text-xl font-bold tracking-wide text-ras-ink uppercase">
-                Who submitted, by site
-              </h2>
-              <p className="mt-1 text-sm text-ras-ink/70">
-                People who filed a form on each site in these dates. Flagged
-                forms aren't counted.
-              </p>
-              <div className="mt-4">
-                <SubmittersBySite
-                  sites={sites}
-                  submissions={submissions}
-                  siteId={filters.siteId}
-                />
+              <div className="hidden lg:block">
+                <h2 className="mt-10 font-display text-xl font-bold tracking-wide text-ras-ink uppercase">
+                  Who submitted, by site
+                </h2>
+                <p className="mt-1 text-sm text-ras-ink/70">
+                  People who filed a form on each site in these dates. Flagged
+                  forms aren't counted.
+                </p>
+                <div className="mt-4">
+                  <SubmittersBySite
+                    sites={sites}
+                    submissions={submissions}
+                    siteId={filters.siteId}
+                  />
+                </div>
               </div>
 
-              {/*SUBMISSIONS ON THE LEFT, WHO DID NOT SUBMIT ON THE RIGHT*/}
-              <div className="mt-10 grid grid-cols-[minmax(0,1fr)_22rem] items-start gap-6">
+              {/*DESKTOP: SUBMISSIONS ON THE LEFT, WHO DID NOT SUBMIT ON THE RIGHT.
+                 PHONE: ONE COLUMN, WHO DID NOT SUBMIT FIRST. grid-cols-1 keeps
+                 that column to the screen's width, so long issue lists
+                 truncate instead of widening the page.*/}
+              <div className="mt-10 grid grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-6">
                 <section>
                   <h2 className="font-display text-xl font-bold tracking-wide text-ras-ink uppercase">
                     Submissions{" "}
@@ -211,24 +222,37 @@ export function AdminDashboardPage({
                   <p className="mt-1 text-sm text-ras-ink/70">
                     {submissions.length === SUBMISSIONS_LIMIT
                       ? `Showing the newest ${SUBMISSIONS_LIMIT}. Narrow the filters to see older ones.`
-                      : "Newest first. Click a row to open it."}
+                      : "Newest first. Open one to see its checklist and photos."}
                   </p>
                   <div className="mt-4">
                     {submissions.length === 0 ? (
                       <p className="rounded-lg border border-dashed border-ras-ink/20 p-6 text-center text-sm text-ras-ink/60">
-                        No submissions match these filters.
+                        No submissions to show.
                       </p>
                     ) : (
-                      <SubmissionTable
-                        submissions={submissions}
-                        onOpen={openDetails}
-                      />
+                      <>
+                        <div className="hidden lg:block">
+                          <SubmissionTable
+                            submissions={submissions}
+                            onOpen={openDetails}
+                          />
+                        </div>
+                        <div className="lg:hidden">
+                          <SubmissionCards
+                            submissions={submissions}
+                            onOpen={openDetails}
+                          />
+                        </div>
+                      </>
                     )}
                   </div>
                 </section>
 
-                {/*Uses only the To date (today if it's empty)*/}
-                <NotSubmittedTable date={filters.to || todayPacific()} />
+                {/*Uses only the To date (today if it's empty). order-first puts
+                   it above the submissions on a phone*/}
+                <div className="order-first lg:order-none">
+                  <NotSubmittedTable date={filters.to || todayPacific()} />
+                </div>
               </div>
             </>
           )}
@@ -243,7 +267,7 @@ export function AdminDashboardPage({
             <p className="font-display text-sm font-semibold tracking-[0.2em] text-ras-green uppercase">
               {formatWorkDate(openSubmission.workDate)}
             </p>
-            <h1 className="mt-1 font-display text-4xl font-bold tracking-wide text-ras-ink uppercase">
+            <h1 className="mt-1 font-display text-3xl font-bold tracking-wide text-ras-ink uppercase sm:text-4xl">
               {openSubmission.siteName}
             </h1>
             <p className="mt-2 text-ras-ink/70">
@@ -265,7 +289,7 @@ export function AdminDashboardPage({
             <p className="font-display text-sm font-semibold tracking-[0.2em] text-ras-green uppercase">
               {formatTodayPacific()}
             </p>
-            <h1 className="mt-1 font-display text-4xl font-bold tracking-wide text-ras-ink uppercase">
+            <h1 className="mt-1 font-display text-3xl font-bold tracking-wide text-ras-ink uppercase sm:text-4xl">
               Daily safety check
             </h1>
             <p className="mt-2 max-w-xl text-ras-ink/70">

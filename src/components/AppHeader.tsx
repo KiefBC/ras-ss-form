@@ -6,7 +6,7 @@ import rasMark from "../assets/ras-mark-white.webp";
 /// `wide` matches the admin dashboard's wider page; otherwise it lines up with the framer's.
 export function AppHeader({ name, wide }: { name: string; wide?: boolean }) {
   return (
-    <header className="bg-ras-brand bg-studs text-white">
+    <header className="bg-ras-brand text-white">
       <div
         className={`mx-auto flex h-16 items-center gap-3 px-4 sm:px-6 ${wide ? "max-w-7xl" : "max-w-4xl"}`}
       >
