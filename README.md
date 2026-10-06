@@ -16,8 +16,6 @@ With Nix and direnv, from the repo folder:
 direnv allow
 ```
 
-This loads Node, the Supabase CLI and psql from `flake.nix`. Without direnv, run `nix develop` instead. Without Nix, install Node and the [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started) yourself.
-
 ### 2. Install packages
 
 ```bash
@@ -50,10 +48,6 @@ supabase link --project-ref <your-project-ref>
 supabase db push
 ```
 
-The project ref is the `xxxx` in `https://xxxx.supabase.co`. `link` asks for your database password. `db push` creates the tables, access rules and the `safety-photos` storage bucket.
-
-Then turn off public sign-up in the dashboard: Authentication → Sign In / Providers → turn off "Allow new users to sign up". Admins create every account.
-
 ### 5. Seed test data (optional)
 
 First create these four users in the dashboard (Authentication → Users → Add user → Create new user, with "Auto Confirm User" ticked). Any passwords will do.
@@ -77,8 +71,6 @@ Then upload the photos for those submissions:
 npm run seed:photos
 ```
 
-Both seed steps are safe to run again.
-
 ### 6. Run
 
 ```bash
@@ -89,16 +81,16 @@ Open the URL it prints (usually http://localhost:5173) and sign in.
 
 ## Commands
 
-| Command | What it does |
-| --- | --- |
-| `npm run dev` | Start the dev server |
-| `npm run build` | Typecheck, then build to `dist/` |
-| `npm run preview` | Serve the built `dist/` |
-| `npm run lint` | Run ESLint |
-| `npm run seed:photos` | Upload the seed photos (needs `.env.local`) |
-| `supabase db push` | Apply new migrations to the linked project |
-| `supabase migration new <name>` | Create a new migration file in `supabase/migrations/` |
-| `supabase gen types typescript --linked > src/lib/database.types.ts` | Regenerate the database types after a schema change |
+| Command                                                              | What it does                                          |
+| -------------------------------------------------------------------- | ----------------------------------------------------- |
+| `npm run dev`                                                        | Start the dev server                                  |
+| `npm run build`                                                      | Typecheck, then build to `dist/`                      |
+| `npm run preview`                                                    | Serve the built `dist/`                               |
+| `npm run lint`                                                       | Run ESLint                                            |
+| `npm run seed:photos`                                                | Upload the seed photos (needs `.env.local`)           |
+| `supabase db push`                                                   | Apply new migrations to the linked project            |
+| `supabase migration new <name>`                                      | Create a new migration file in `supabase/migrations/` |
+| `supabase gen types typescript --linked > src/lib/database.types.ts` | Regenerate the database types after a schema change   |
 
 ## Conventions
 
