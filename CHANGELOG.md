@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sign-in page with email and password, styled in RAS brand colours. Accounts are created by an admin; there's no self sign-up.
 - Tailwind CSS v4 with RAS brand colour and font settings.
 - Signed-in dashboard with the daily site safety form: site and date, PPE and site checklist, notes, and photo attachments (JPG, PNG or WebP, up to 10 MB each). The form validates and confirms on submit but doesn't save anything yet, and the site list is placeholder data.
+- Dashboard home screen. It greets you by the name on your profile and lists your 30 most recent safety checks as compact cards: the check's first photo, then the site, date and time, and "No issues", which items had issues, or "Flagged as incorrect". Click a card to open its details page with the full checklist (each item OK or Issue), notes, and all its photos; tap a photo to open it full size. From the details page you can flag your own check as incorrect, after confirming; only a supervisor can unflag it. "Start a safety check" opens the form, and after you submit you go back to the list.
 - Test data: four sites, four users (one admin, one deactivated) and their past submissions in `supabase/seed.sql`, plus photos for those submissions uploaded with `npm run seed:photos`.
 
 ### Removed

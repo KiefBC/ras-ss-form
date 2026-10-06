@@ -45,9 +45,14 @@ function Section({
   );
 }
 
-type SafetyFormProps = { workerId: string; workerName: string };
+type SafetyFormProps = {
+  workerId: string;
+  workerName: string;
+  /// Called from the confirmation screen to go back to the dashboard.
+  onDone: () => void;
+};
 
-export function SafetyForm({ workerId, workerName }: SafetyFormProps) {
+export function SafetyForm({ workerId, workerName, onDone }: SafetyFormProps) {
   const today = todayPacific();
   const [siteId, setSiteId] = useState("");
   const [workDate, setWorkDate] = useState(today);
@@ -104,17 +109,6 @@ export function SafetyForm({ workerId, workerName }: SafetyFormProps) {
     }
   }
 
-  function reset() {
-    setSiteId("");
-    setWorkDate(todayPacific());
-    setIssues(noIssuesTicked());
-    setNoIssues(false);
-    setNotes("");
-    setPhotos([]);
-    setError(null);
-    setStatus("idle");
-  }
-
   if (status === "done") {
     return (
       <div
@@ -132,10 +126,10 @@ export function SafetyForm({ workerId, workerName }: SafetyFormProps) {
         <Button
           type="button"
           variant="outline"
-          onClick={reset}
+          onClick={onDone}
           className="mt-6"
         >
-          Start another check
+          Back to my submissions
         </Button>
       </div>
     );
