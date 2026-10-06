@@ -81,10 +81,10 @@ Open the URL it prints (usually http://localhost:5173) and sign in.
 
 ## Conventions
 
-Commits follow [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/):
-Branches follow [Conventional Branch](https://conventional-branch.github.io/): `<type>/<description>`.
-The project follows [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html).
-The version lives in `package.json`, and each release is tagged `vX.Y.Z`.
+- Commits follow [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/):
+- Branches follow [Conventional Branch](https://conventional-branch.github.io/): `<type>/<description>`.
+- The project follows [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html).
+- The version lives in `package.json`, and each release is tagged `vX.Y.Z`.
 
 ## React Compiler
 
