@@ -75,7 +75,9 @@ export async function loadMySubmissions(
 /// Signed URLs for photos in the private bucket, by storage path, in one request.
 /// A photo that can't be signed is left out, so it just doesn't show
 /// instead of the whole list failing.
-async function signPhotoUrls(paths: string[]): Promise<Map<string, string>> {
+export async function signPhotoUrls(
+  paths: string[],
+): Promise<Map<string, string>> {
   const urls = new Map<string, string>();
   if (paths.length === 0) return urls;
 

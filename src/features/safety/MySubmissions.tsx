@@ -1,19 +1,13 @@
 import { useEffect, useState } from "react";
-import {
-  ChevronRight,
-  CircleCheck,
-  Flag,
-  ImageOff,
-  TriangleAlert,
-} from "lucide-react";
+import { ChevronRight, ImageOff } from "lucide-react";
 import { ErrorMessage } from "../../components/ErrorMessage";
 import {
   formatPacificTime,
   formatWorkDate,
   todayPacific,
 } from "../../lib/timezone";
-import { issueLabels } from "./checklist";
 import { loadMySubmissions, type MySubmission } from "./loadMySubmissions";
+import { SubmissionStatus } from "./SubmissionStatus";
 
 function SubmissionCard({
   submission,
@@ -28,7 +22,6 @@ function SubmissionCard({
     submission.workDate === today
       ? "Today"
       : formatWorkDate(submission.workDate);
-  const issues = issueLabels(submission.issues);
 
   // A button can only hold inline content, so the text is in spans, not headings.
   return (
@@ -65,22 +58,11 @@ function SubmissionCard({
             {date} · {formatPacificTime(submission.submittedAt)}
           </span>
 
-          {submission.flagged ? (
-            <span className="mt-1 flex items-center gap-1.5 text-sm font-semibold text-ras-ink/70">
-              <Flag aria-hidden="true" className="size-4 shrink-0" />
-              Flagged as incorrect
-            </span>
-          ) : issues.length === 0 ? (
-            <span className="mt-1 flex items-center gap-1.5 text-sm font-semibold text-ras-green">
-              <CircleCheck aria-hidden="true" className="size-4 shrink-0" />
-              No issues
-            </span>
-          ) : (
-            <span className="mt-1 flex w-fit max-w-full items-center gap-1.5 rounded-sm bg-ras-warning px-1.5 py-0.5 text-sm font-semibold text-ras-ink">
-              <TriangleAlert aria-hidden="true" className="size-4 shrink-0" />
-              <span className="truncate">Issues: {issues.join(", ")}</span>
-            </span>
-          )}
+          <SubmissionStatus
+            flagged={submission.flagged}
+            issues={submission.issues}
+            className="mt-1"
+          />
         </span>
 
         <ChevronRight
