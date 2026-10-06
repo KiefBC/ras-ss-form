@@ -4,8 +4,7 @@ import { ErrorMessage } from "../../components/ErrorMessage";
 import { formatWorkDate, todayPacific } from "../../lib/timezone";
 import { loadNotSubmitted, type MissingFramer } from "./loadNotSubmitted";
 
-/// "Who did not submit": active framers with no form on one day, as a table
-/// beside the submissions table. Loads its own list whenever the date changes.
+/// "Who did not submit"
 export function NotSubmittedTable({ date }: { date: string }) {
   // null while loading
   const [framers, setFramers] = useState<MissingFramer[] | null>(null);

@@ -1,8 +1,7 @@
 import { supabase } from "../../lib/supabase";
 import type { Issues } from "./checklist";
 
-/// One of the signed-in user's own submissions: everything the card and the
-/// details page show.
+/// One of the signed-in user's own submissions
 export type MySubmission = {
   id: string;
   siteName: string;
@@ -21,8 +20,6 @@ const PHOTO_URL_SECONDS = 60 * 60;
 export async function loadMySubmissions(
   workerId: string,
 ): Promise<MySubmission[]> {
-  // RLS already limits a framer to their own rows, but an admin can read
-  // everyone's, so filter on worker_id too.
   const { data, error } = await supabase
     .from("submissions")
     .select("*, sites(name), submission_photos(storage_path)")
@@ -72,9 +69,7 @@ export async function loadMySubmissions(
   return submissions;
 }
 
-/// Signed URLs for photos in the private bucket, by storage path, in one request.
-/// A photo that can't be signed is left out, so it just doesn't show
-/// instead of the whole list failing.
+/// Signed URLs for photos in the private bucket, by storage path
 export async function signPhotoUrls(
   paths: string[],
 ): Promise<Map<string, string>> {

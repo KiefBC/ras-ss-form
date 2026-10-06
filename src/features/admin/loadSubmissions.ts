@@ -2,8 +2,7 @@ import { supabase } from "../../lib/supabase";
 import type { Issues } from "../safety/checklist";
 import { signPhotoUrls } from "../safety/loadMySubmissions";
 
-/// A submission in the supervisor's list: the same fields as MySubmission,
-/// plus who filed it and the ids the filters and the by-site summary need.
+/// A submission in the supervisor's list
 export type AdminSubmission = {
   id: string;
   workerId: string;
@@ -30,7 +29,7 @@ export type SubmissionFilters = {
 export const SUBMISSIONS_LIMIT = 500;
 
 /// Everyone's submissions that match the filters, newest first.
-/// RLS lets an admin read every submission; anyone else would only get their own.
+/// RLS lets an admin read every submission and anyone else would get their own.
 export async function loadSubmissions(
   filters: SubmissionFilters,
 ): Promise<AdminSubmission[]> {

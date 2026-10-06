@@ -4,7 +4,7 @@ import type { AdminSubmission } from "./loadSubmissions";
 type Submitter = { workerId: string; name: string; forms: number };
 
 /// Who filed a form on one site, A to Z, with how many forms each.
-/// Flagged forms don't count: they were marked as wrong.
+/// Flagged forms don't count
 function submittersOn(
   siteId: string,
   submissions: AdminSubmission[],
@@ -31,7 +31,6 @@ type SubmittersBySiteProps = {
 };
 
 /// One card per site listing the people who filed a form there.
-/// Active sites with no forms are shown too, so a missing form stands out.
 export function SubmittersBySite({
   sites,
   submissions,

@@ -13,8 +13,7 @@ type SubmissionTableProps = {
   onOpen: (submission: AdminSubmission) => void;
 };
 
-/// The filtered submissions as a table: worker, site, date, status and photos.
-/// Click anywhere on a row to open it.
+/// The filtered submissions
 export function SubmissionTable({ submissions, onOpen }: SubmissionTableProps) {
   const today = todayPacific();
 
@@ -69,8 +68,6 @@ export function SubmissionTable({ submissions, onOpen }: SubmissionTableProps) {
                 )}
               </td>
               <td className="py-3 pr-4">
-                {/*For keyboard users. It has no onClick of its own: the click
-                   bubbles up to the row, which opens the submission.*/}
                 <button
                   type="button"
                   aria-label={`Open ${s.workerName}'s check for ${s.siteName}`}

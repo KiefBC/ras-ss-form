@@ -320,7 +320,7 @@ export function SafetyForm({ workerId, workerName, onDone }: SafetyFormProps) {
           disabled={submitting}
           onChange={(e) => setNotes(e.target.value)}
           placeholder="e.g. Rope on the north scaffold is frayed, tagged out and replaced."
-          className="block w-full rounded-md border border-ras-ink/20 bg-ras-surface px-3.5 py-3 text-base text-ras-ink shadow-xs placeholder:text-ras-ink/40 transition focus:border-ras-green focus:ring-3 focus:ring-ras-green/20 focus:outline-none"
+          className="block w-full rounded-md border border-ras-ink/20 bg-ras-surface px-3.5 py-3 text-base text-ras-ink shadow-xs transition focus:ring-3 focus:ring-ras-green/20 focus:outline-none"
         />
       </Section>
 

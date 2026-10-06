@@ -7,8 +7,8 @@ export type MissingFramer = {
 };
 
 /// Active framers with no valid form on the date, A to Z.
-/// A form on any site counts. A flagged form doesn't, since it was marked as wrong.
-/// Admins aren't expected to submit, so they're never listed.
+/// A form on any site counts. A flagged form doesn't
+/// Admins aren't expected to submit
 export async function loadNotSubmitted(date: string): Promise<MissingFramer[]> {
   const framers = await supabase
     .from("profiles")
@@ -32,8 +32,7 @@ export async function loadNotSubmitted(date: string): Promise<MissingFramer[]> {
 
   const missing = framers.data.filter((f) => !submittedIds.includes(f.id));
 
-  // One small query per missing framer, run at the same time. Loading everyone's
-  // whole history instead could pass Supabase's 1,000-row limit and give wrong dates.
+  // One small query per missing framer, run at the same time.
   const lastFormDates = await Promise.all(
     missing.map((f) => loadLastFormDate(f.id, date)),
   );
