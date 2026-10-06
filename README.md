@@ -81,6 +81,7 @@ Open the URL it prints (usually http://localhost:5173) and sign in.
 
 ## Conventions
 
+- Changelog updates follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Commits follow [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/):
 - Branches follow [Conventional Branch](https://conventional-branch.github.io/): `<type>/<description>`.
 - The project follows [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html).
