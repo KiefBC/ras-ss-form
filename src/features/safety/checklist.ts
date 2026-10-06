@@ -21,23 +21,23 @@ export const CHECKLIST_GROUPS: ChecklistGroup[] = [
     items: [
       {
         key: "hard_hat_issue",
-        label: "Hard hat",
-        hint: "Missing, cracked or expired",
+        label: "Hard Hat",
+        hint: "Missing, Cracked or Expired",
       },
       {
         key: "vest_issue",
-        label: "Hi-vis vest",
-        hint: "Missing or not visible",
+        label: "Hi-Vis Vest",
+        hint: "Missing or Not Visible",
       },
       {
         key: "boots_issue",
-        label: "Safety boots",
-        hint: "Not CSA-rated or damaged",
+        label: "Safety Boots",
+        hint: "Not CSA-rated or Damaged",
       },
       {
         key: "eye_protection_issue",
-        label: "Eye protection",
-        hint: "Missing or scratched",
+        label: "Eye Protection",
+        hint: "Missing or Scratched",
       },
     ],
   },
@@ -46,23 +46,23 @@ export const CHECKLIST_GROUPS: ChecklistGroup[] = [
     items: [
       {
         key: "fall_protection_issue",
-        label: "Fall protection in place",
-        hint: "Guardrails, harnesses, anchors",
+        label: "Fall Protection",
+        hint: "Expired, Frayed, Missing",
       },
       {
         key: "ladders_scaffolding_issue",
-        label: "Ladders & scaffolding inspected",
-        hint: "Tagged, footed, secured",
+        label: "Ladders & Scaffolding",
+        hint: "Broken, Uneven, Expired, Unsecure",
       },
       {
         key: "tools_cords_issue",
-        label: "Tools & cords in good condition",
-        hint: "Guards on, no frayed cords",
+        label: "Tools & Cords",
+        hint: "Frayed Cord, Patched Cord, Smoking Driver",
       },
       {
         key: "hazards_issue",
-        label: "Hazards identified",
-        hint: "Openings, debris, overhead work",
+        label: "Hazards Identified",
+        hint: "Openings, Debris, Unsecure Landings",
       },
     ],
   },

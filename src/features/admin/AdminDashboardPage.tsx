@@ -290,7 +290,7 @@ export function AdminDashboardPage({
 
         {/*THE SUPERVISOR'S OWN SAFETY CHECK*/}
         {showForm && (
-          <div className="mx-auto max-w-[53rem]">
+          <div className="mx-auto max-w-212">
             <BackButton onClick={closeForm}>All submissions</BackButton>
             <p className="font-display text-sm font-semibold tracking-[0.2em] text-ras-green uppercase">
               {formatTodayPacific()}
