@@ -79,19 +79,6 @@ npm run dev
 
 Open the URL it prints (usually http://localhost:5173) and sign in.
 
-## Commands
-
-| Command                                                              | What it does                                          |
-| -------------------------------------------------------------------- | ----------------------------------------------------- |
-| `npm run dev`                                                        | Start the dev server                                  |
-| `npm run build`                                                      | Typecheck, then build to `dist/`                      |
-| `npm run preview`                                                    | Serve the built `dist/`                               |
-| `npm run lint`                                                       | Run ESLint                                            |
-| `npm run seed:photos`                                                | Upload the seed photos (needs `.env.local`)           |
-| `supabase db push`                                                   | Apply new migrations to the linked project            |
-| `supabase migration new <name>`                                      | Create a new migration file in `supabase/migrations/` |
-| `supabase gen types typescript --linked > src/lib/database.types.ts` | Regenerate the database types after a schema change   |
-
 ## Conventions
 
 Commits follow [Conventional Commits 1.0.0](https://www.conventionalcommits.org/en/v1.0.0/):
