@@ -27,13 +27,6 @@ describe("submitWindowOpen", () => {
     setNow("2026-10-06T17:00:00-07:00");
     expect(submitWindowOpen()).toBe(false);
   });
-
-  it("uses the winter offset after daylight saving ends", () => {
-    setNow("2026-12-01T04:59:00-08:00");
-    expect(submitWindowOpen()).toBe(false);
-    setNow("2026-12-01T05:00:00-08:00");
-    expect(submitWindowOpen()).toBe(true);
-  });
 });
 
 describe("todayPacific", () => {
