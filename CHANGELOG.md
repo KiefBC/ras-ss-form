@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [UNRELEASED]
 
+## [0.3.5] - 2026-10-06
+
 ### Added
 - Unit tests with Vitest, run with `npm test`. They cover the Pacific-time helpers (the 5am–5pm window, today's date, work-date formatting), the safety checklist, and the supervisor dashboard's form counts. They don't need Supabase or a browser.
 - GitHub Actions CI. Every pull request to `main` runs lint, the unit tests and the build.
@@ -60,6 +62,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Public sign-up is disabled; only admins create accounts.
 
 [Unreleased]: https://github.com/KiefBC/ras-ss-form/compare/v0.2.0...HEAD
+[0.3.5]: https://github.com/KiefBC/ras-ss-form/compare/v0.3.0...v0.3.5
 [0.3.0]: https://github.com/KiefBC/ras-ss-form/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/KiefBC/ras-ss-form/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/KiefBC/ras-ss-form/releases/tag/v0.1.0
