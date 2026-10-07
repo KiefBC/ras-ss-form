@@ -126,6 +126,16 @@ export function AdminDashboardPage({
     window.scrollTo(0, 0);
   }
 
+  // The sites in "Forms by site and day" and "Who submitted, by site": the chosen
+  // site, or every active site plus any inactive one that still has a form listed.
+  const shownSites = sites.filter((site) => {
+    if (filters.siteId) return site.id === filters.siteId;
+    if (site.active) return true;
+    return (
+      submissions !== null && submissions.some((s) => s.siteId === site.id)
+    );
+  });
+
   const firstName = name.split(" ")[0];
 
   return (
@@ -133,7 +143,8 @@ export function AdminDashboardPage({
       <AppHeader name={name} wide />
 
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:py-10">
-        {/*HOME: FILTERS, WHO SUBMITTED ON EACH SITE, AND THE TABLES*/}
+        {/*HOME: FILTERS, WHO SUBMITTED ON EACH SITE, AND THE TABLES.
+           Hidden, not unmounted*/}
         <div hidden={openSubmission !== null || showForm}>
           {/*GREETING, WITH START A SAFETY CHECK BELOW IT ON A PHONE AND ON
              ITS RIGHT ON A DESKTOP*/}
@@ -196,7 +207,7 @@ export function AdminDashboardPage({
                 </p>
                 <div className="mt-4">
                   <SiteCoverageGrid
-                    sites={sites}
+                    sites={shownSites}
                     submissions={submissions}
                     filters={filters}
                   />
@@ -211,9 +222,8 @@ export function AdminDashboardPage({
                 </p>
                 <div className="mt-4">
                   <SubmittersBySite
-                    sites={sites}
+                    sites={shownSites}
                     submissions={submissions}
-                    siteId={filters.siteId}
                   />
                 </div>
               </div>
@@ -256,8 +266,8 @@ export function AdminDashboardPage({
                 </section>
 
                 {/*Uses only the To date (today if it's empty). order-first puts
-                   it above the submissions when they're one column*/}
-                <div className="order-first xl:order-0">
+                   it above the submissions when they're one column (below lg)*/}
+                <div className="order-first lg:order-0">
                   <NotSubmittedTable date={filters.to || todayPacific()} />
                 </div>
               </div>

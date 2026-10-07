@@ -21,15 +21,17 @@ export function DashboardPage({ session }: { session: Session }) {
   const [name, setName] = useState<string | undefined>(undefined);
   // Supervisors are the admin role
   const [isAdmin, setIsAdmin] = useState(false);
+  // Three screens: the list (home), one submission's details, and the form.
+  // The details screen is "view is submissions AND openSubmission is set".
   const [view, setView] = useState<"submissions" | "form">("submissions");
-  // The submission shown on its details page, or null to show the list.
   const [openSubmission, setOpenSubmission] = useState<MySubmission | null>(
     null,
   );
-  // How far down the list was scrolled when a card was opened, so "back" returns there
+  // The list stays mounted but hidden under the details screen, so "back" doesn't
+  // refetch it. listScrollY puts the scroll back where it was.
   const listScrollY = useRef(0);
-  // Changing this remounts the list
-  const [listVersion, setListVersion] = useState(0);
+  // Bumping the list's key remounts it, which refetches after a flag.
+  const [listKey, setListKey] = useState(0);
 
   useEffect(() => {
     // If the profile can't be read, use the full name given at signup, else the email
@@ -60,7 +62,7 @@ export function DashboardPage({ session }: { session: Session }) {
   function markFlagged() {
     if (openSubmission === null) return;
     setOpenSubmission({ ...openSubmission, flagged: true });
-    setListVersion(listVersion + 1);
+    setListKey(listKey + 1);
     window.scrollTo(0, 0);
   }
 
@@ -103,7 +105,7 @@ export function DashboardPage({ session }: { session: Session }) {
               </h2>
               <div className="mt-4">
                 <MySubmissions
-                  key={listVersion}
+                  key={listKey}
                   workerId={session.user.id}
                   onOpen={openDetails}
                 />

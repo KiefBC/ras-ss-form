@@ -9,6 +9,7 @@ export function NotSubmittedTable({ date }: { date: string }) {
   // null while loading
   const [framers, setFramers] = useState<MissingFramer[] | null>(null);
   const [failed, setFailed] = useState(false);
+  const today = todayPacific();
 
   useEffect(() => {
     // If the date changes before this load finishes, drop its result.
@@ -34,8 +35,7 @@ export function NotSubmittedTable({ date }: { date: string }) {
         )}
       </h2>
       <p className="mt-1 text-sm text-ras-ink/70">
-        {date === todayPacific() ? "Today" : formatWorkDate(date)} · uses the
-        "To" date
+        {date === today ? "Today" : formatWorkDate(date)} · uses the "To" date
       </p>
 
       <div className="mt-4">

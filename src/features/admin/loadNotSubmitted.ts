@@ -32,20 +32,14 @@ export async function loadNotSubmitted(date: string): Promise<MissingFramer[]> {
 
   const missing = framers.data.filter((f) => !submittedIds.includes(f.id));
 
-  // One small query per missing framer, run at the same time.
-  const lastFormDates = await Promise.all(
-    missing.map((f) => loadLastFormDate(f.id, date)),
+  // One small query per missing framer, run at the same time. Keeps the A to Z order.
+  return Promise.all(
+    missing.map(async (framer) => ({
+      id: framer.id,
+      name: framer.full_name,
+      lastFormDate: await loadLastFormDate(framer.id, date),
+    })),
   );
-
-  const result: MissingFramer[] = [];
-  for (let i = 0; i < missing.length; i++) {
-    result.push({
-      id: missing[i].id,
-      name: missing[i].full_name,
-      lastFormDate: lastFormDates[i],
-    });
-  }
-  return result;
 }
 
 /// The framer's latest valid form date before `date`, or null if they have none.

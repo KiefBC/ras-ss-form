@@ -12,7 +12,7 @@ const variants = {
 };
 
 type ButtonProps = ComponentProps<"button"> & {
-  variant?: keyof typeof variants;
+  variant?: "primary" | "outline";
   /// Disables the button and shows a spinner while an action runs.
   pending?: boolean;
 };
@@ -26,8 +26,8 @@ export function Button({
 }: ButtonProps) {
   return (
     <button
-      disabled={pending}
       {...props}
+      disabled={pending || props.disabled}
       className={`${base} ${variants[variant]} ${className}`}
     >
       {pending && (

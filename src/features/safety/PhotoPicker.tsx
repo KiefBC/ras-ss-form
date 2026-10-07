@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { ImagePlus, X } from "lucide-react";
 import { ErrorMessage } from "../../components/ErrorMessage";
+import { PHOTO_EXTENSIONS } from "./submitSafetyForm";
 
 // Same limits as the safety-photos bucket, so anything picked here will upload.
-const PHOTO_TYPES = ["image/jpeg", "image/png", "image/webp"];
+const PHOTO_TYPES = Object.keys(PHOTO_EXTENSIONS);
 const PHOTO_MAX_BYTES = 10 * 1024 * 1024;
 
 /// True if the file is an allowed type and small enough to upload.
-const isValidPhoto = (file: File) =>
-  PHOTO_TYPES.includes(file.type) && file.size <= PHOTO_MAX_BYTES;
+function isValidPhoto(file: File) {
+  return PHOTO_TYPES.includes(file.type) && file.size <= PHOTO_MAX_BYTES;
+}
 
 type PhotoPickerProps = {
   photos: File[];

@@ -7,7 +7,7 @@ import { Button } from "../../components/Button";
 import { ErrorMessage } from "../../components/ErrorMessage";
 import { TextInput } from "../../components/TextInput";
 
-/// Used for returning a message based on the error code
+/// The message to show for a sign-in error.
 function signInErrorMessage(error: AuthError) {
   switch (error.code) {
     case "invalid_credentials":
@@ -56,7 +56,7 @@ function BrandPanel() {
   );
 }
 
-/// Represents the... login form
+/// The email and password form.
 function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

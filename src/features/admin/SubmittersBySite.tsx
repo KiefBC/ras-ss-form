@@ -3,29 +3,20 @@ import { submittersOn } from "./formCounts";
 import type { AdminSubmission } from "./loadSubmissions";
 
 type SubmittersBySiteProps = {
+  /// The sites to show, one card each.
   sites: SiteOption[];
   /// The filtered submissions; the summary counts these.
   submissions: AdminSubmission[];
-  /// The site filter, or "" for all sites.
-  siteId: string;
 };
 
 /// One card per site listing the people who filed a form there.
-/// Active sites with no forms are shown too
 export function SubmittersBySite({
   sites,
   submissions,
-  siteId,
 }: SubmittersBySiteProps) {
-  const shownSites = sites.filter((site) =>
-    siteId
-      ? site.id === siteId
-      : site.active || submissions.some((s) => s.siteId === site.id),
-  );
-
   return (
     <ul className="grid grid-cols-4 gap-3">
-      {shownSites.map((site) => {
+      {sites.map((site) => {
         const submitters = submittersOn(site.id, submissions);
         return (
           <li
