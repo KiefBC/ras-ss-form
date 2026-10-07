@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Unit tests with Vitest, run with `npm test`. They cover the Pacific-time helpers (the 5am–5pm window, today's date, work-date formatting), the safety checklist, and the supervisor dashboard's form counts. They don't need Supabase or a browser.
+- GitHub Actions CI. Every pull request to `main` runs lint, the unit tests and the build.
 
 ## [0.3.0] - 2026-10-06
 
