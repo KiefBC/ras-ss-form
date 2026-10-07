@@ -1,26 +1,6 @@
 import type { SiteOption } from "./filterOptions";
+import { submittersOn } from "./formCounts";
 import type { AdminSubmission } from "./loadSubmissions";
-
-type Submitter = { workerId: string; name: string; forms: number };
-
-/// Who filed a form on one site, A to Z, with how many forms each.
-/// Flagged forms don't count
-function submittersOn(
-  siteId: string,
-  submissions: AdminSubmission[],
-): Submitter[] {
-  const submitters: Submitter[] = [];
-  for (const s of submissions) {
-    if (s.siteId !== siteId || s.flagged) continue;
-    const existing = submitters.find((p) => p.workerId === s.workerId);
-    if (existing) {
-      existing.forms += 1;
-    } else {
-      submitters.push({ workerId: s.workerId, name: s.workerName, forms: 1 });
-    }
-  }
-  return submitters.sort((a, b) => a.name.localeCompare(b.name));
-}
 
 type SubmittersBySiteProps = {
   sites: SiteOption[];

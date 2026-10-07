@@ -83,6 +83,12 @@ npm run dev
 
 Open the URL it prints (usually http://localhost:5173) and sign in.
 
+### 7. Run Tests
+
+```bash
+npm run test
+```
+
 ## Conventions
 
 - Changelog updates follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
