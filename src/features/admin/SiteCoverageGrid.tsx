@@ -1,7 +1,7 @@
 import { CircleCheck, TriangleAlert } from "lucide-react";
 import { daysBefore, formatWorkDate, todayPacific } from "../../lib/timezone";
-import { issueLabels } from "../safety/checklist";
 import type { SiteOption } from "./filterOptions";
+import { countForms, describeCount } from "./formCounts";
 import {
   SUBMISSIONS_LIMIT,
   type AdminSubmission,
@@ -10,32 +10,6 @@ import {
 
 /// The grid shows at most this many days
 const MAX_DAYS = 31;
-
-/// The forms on one site on one day. Flagged forms aren't counted.
-type DayCount = { forms: number; withIssues: number };
-
-function countForms(
-  siteId: string,
-  day: string,
-  submissions: AdminSubmission[],
-): DayCount {
-  let forms = 0;
-  let withIssues = 0;
-  for (const s of submissions) {
-    if (s.siteId !== siteId || s.workDate !== day || s.flagged) continue;
-    forms += 1;
-    if (issueLabels(s.issues).length > 0) withIssues += 1;
-  }
-  return { forms, withIssues };
-}
-
-/// What a square means in words, e.g. "2 forms, 1 with issues".
-function describe(count: DayCount): string {
-  if (count.forms === 0) return "No forms";
-  const forms = count.forms === 1 ? "1 form" : `${count.forms} forms`;
-  if (count.withIssues === 0) return `${forms}, no issues`;
-  return `${forms}, ${count.withIssues} with issues`;
-}
 
 /// A work date's short weekday
 const weekday = (day: string) =>
@@ -129,7 +103,7 @@ export function SiteCoverageGrid({
               </th>
               {days.map((day) => {
                 const count = countForms(site.id, day, submissions);
-                const label = describe(count);
+                const label = describeCount(count);
                 return (
                   <td
                     key={day}
