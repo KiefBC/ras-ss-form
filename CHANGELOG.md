@@ -7,15 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [UNRELEASED]
 
+### Fixed
+
+- Supervisor dashboard: between the `lg` and `xl` breakpoints, "Who did not submit" took the wide column and squeezed the submissions table into the narrow one. It now sits beside the table at `lg` and above it below that, as intended.
+
+### Changed
+
+- Removed the React Compiler build step and its Babel dependencies, and the react-refresh lint rule. Fewer moving parts; no change to what the app does.
+- `npm run format` runs Prettier. The whole of `src/` now uses its defaults (double quotes, semicolons).
+
 ## [0.3.5] - 2026-10-06
 
 ### Added
+
 - Unit tests with Vitest, run with `npm test`. They cover the Pacific-time helpers (the 5am–5pm window, today's date, work-date formatting), the safety checklist, and the supervisor dashboard's form counts. They don't need Supabase or a browser.
 - GitHub Actions CI. Every pull request to `main` runs lint, the unit tests and the build.
 
 ## [0.3.0] - 2026-10-06
 
 ### Added
+
 - Supervisor dashboard, built for desktop screens. Admins now land on it instead of the framer's home screen. A table lists everyone's safety checks, newest first, with the worker, site, date and time, status (no issues, which items had issues, or flagged as incorrect) and number of photos. Filter by site, worker and date range; it starts on the last 7 days. "Who submitted, by site" shows the people who filed a form on each site in those dates, and active sites with no forms say so. Click a row to see the checklist and notes side by side, with the photos full width underneath.
 - "Who did not submit" table on the supervisor dashboard, beside the submissions table on wide screens and above it on narrower ones. It lists every active framer with no form on the "To" date (today by default), with the date of their last form before that day, so supervisors can see who hasn't filled in their safety form. Flagged forms don't count, admins aren't listed, and the site and worker filters don't change it. When nobody's missing it says "Everyone has submitted".
 - Supervisors can fill in their own safety check. "Start a safety check" sits on the right of the dashboard greeting and opens the same form framers use, centred at the same width as on their page; after submitting, the submissions list reloads so the new check shows.
@@ -23,11 +34,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - "Forms by site and day" grid on the supervisor dashboard, above "Who submitted, by site". Desktop only; phones don't show it. Each row is a site and each column a day in the filtered dates, up to the last 31. A square shows how many forms were filed there that day: green with a check when none had issues, yellow with a warning sign when at least one did, and empty when nobody filed, so days a site went without a safety form stand out. Hover a square for the site, date and counts. Flagged forms aren't counted. If only the newest 500 forms loaded, the oldest days are left out instead of showing as empty.
 
 ### Changed
+
 - The green header and the green panel on the sign-in page are now solid RAS green, without the faint vertical stud stripes.
 
 ## [0.2.0] - 2026-10-05
 
 ### Added
+
 - Sign-in page with email and password, styled in RAS brand colours. Accounts are created by an admin; there's no self sign-up.
 - Tailwind CSS v4 with RAS brand colour and font settings.
 - Signed-in dashboard with the daily site safety form: site and date, PPE and site checklist, notes, and photo attachments (JPG, PNG or WebP, up to 10 MB each). Submitting saves the form and then uploads its photos, and the site list shows the active sites from the database. If you've already filled in that site's form today, or it's outside 5am–5pm, the form says so. If a photo fails to upload, the form is still saved and the confirmation says how many photos didn't upload.
@@ -37,10 +50,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - README setup steps for running the app on your own Supabase project, and a list of the everyday commands.
 
 ### Removed
+
 - Vite starter page and its assets.
 - `site_submission_status()` database function. It only made sense when a site shared one form per day.
 
 ### Fixed
+
 - Every framer on a site now submits their own safety form. Previously only one form per site per day was accepted, so the rest of the crew couldn't submit. Each framer can have one active form per site per day.
 - Deactivated accounts can no longer sign in, and their existing sessions end. Previously a deactivated person lost access to the data but could still sign in. Signing in to a deactivated account now shows "This account has been deactivated. Contact the office."
 
@@ -61,7 +76,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Logged-out callers cannot execute database functions.
 - Public sign-up is disabled; only admins create accounts.
 
-[Unreleased]: https://github.com/KiefBC/ras-ss-form/compare/v0.2.0...HEAD
+[UNRELEASED]: https://github.com/KiefBC/ras-ss-form/compare/v0.3.5...HEAD
 [0.3.5]: https://github.com/KiefBC/ras-ss-form/compare/v0.3.0...v0.3.5
 [0.3.0]: https://github.com/KiefBC/ras-ss-form/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/KiefBC/ras-ss-form/compare/v0.1.0...v0.2.0

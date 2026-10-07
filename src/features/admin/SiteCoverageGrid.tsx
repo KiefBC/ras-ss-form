@@ -12,13 +12,15 @@ import {
 const MAX_DAYS = 31;
 
 /// A work date's short weekday
-const weekday = (day: string) =>
-  new Date(day).toLocaleDateString("en-CA", {
+function weekday(day: string) {
+  return new Date(day).toLocaleDateString("en-CA", {
     timeZone: "UTC",
     weekday: "short",
   });
+}
 
 type SiteCoverageGridProps = {
+  /// The sites to show, one row each.
   sites: SiteOption[];
   /// The filtered submissions, newest first
   submissions: AdminSubmission[];
@@ -53,14 +55,7 @@ export function SiteCoverageGrid({
     days.push(day);
   }
 
-  // The same sites as "Who submitted, by site"
-  const shownSites = sites.filter((site) =>
-    filters.siteId
-      ? site.id === filters.siteId
-      : site.active || submissions.some((s) => s.siteId === site.id),
-  );
-
-  if (days.length === 0 || shownSites.length === 0) {
+  if (days.length === 0 || sites.length === 0) {
     return (
       <p className="rounded-lg border border-dashed border-ras-ink/20 p-6 text-center text-sm text-ras-ink/60">
         No days to show.
@@ -70,7 +65,6 @@ export function SiteCoverageGrid({
 
   return (
     <div className="rounded-lg border border-ras-ink/10 bg-ras-surface p-4 shadow-xs">
-      {/*border-spacing-0.5 leaves a 2px gap between the squares*/}
       <table className="w-full table-fixed border-separate border-spacing-0.5 text-sm">
         <thead>
           <tr>
@@ -93,7 +87,7 @@ export function SiteCoverageGrid({
           </tr>
         </thead>
         <tbody>
-          {shownSites.map((site) => (
+          {sites.map((site) => (
             <tr key={site.id}>
               <th
                 scope="row"

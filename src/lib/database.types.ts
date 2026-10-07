@@ -214,15 +214,6 @@ export type Database = {
         Args: { p_flagged: boolean; p_submission_id: string }
         Returns: undefined
       }
-      site_submission_status: {
-        Args: { p_site_id: string; p_work_date: string }
-        Returns: {
-          is_own: boolean
-          submission_id: string
-          submitted_at: string
-          submitted_by: string
-        }[]
-      }
       sites_without_submission: {
         Args: { p_date: string }
         Returns: {

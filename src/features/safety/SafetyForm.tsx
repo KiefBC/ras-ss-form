@@ -7,7 +7,8 @@ import { submitWindowOpen, todayPacific } from "../../lib/timezone";
 import {
   CHECKLIST_GROUPS,
   NOTES_MAX,
-  noIssuesTicked,
+  NO_ISSUES,
+  issueLabels,
   type IssueKey,
 } from "./checklist";
 import { loadActiveSites, type Site } from "./sites";
@@ -58,7 +59,7 @@ export function SafetyForm({ workerId, workerName, onDone }: SafetyFormProps) {
   const [sites, setSites] = useState<Site[] | null>(null);
   const [siteId, setSiteId] = useState("");
   const [workDate, setWorkDate] = useState(today);
-  const [issues, setIssues] = useState(noIssuesTicked);
+  const [issues, setIssues] = useState(NO_ISSUES);
   const [noIssues, setNoIssues] = useState(false);
   const [notes, setNotes] = useState("");
   const [photos, setPhotos] = useState<File[]>([]);
@@ -86,13 +87,13 @@ export function SafetyForm({ workerId, workerName, onDone }: SafetyFormProps) {
 
   function toggleNoIssues(checked: boolean) {
     setNoIssues(checked);
-    if (checked) setIssues(noIssuesTicked());
+    if (checked) setIssues(NO_ISSUES);
   }
 
   function validate() {
     if (!siteId) return "Choose the job site you're on.";
     if (workDate !== today) return "Forms can only be filed for today.";
-    if (!noIssues && !Object.values(issues).some((ticked) => ticked))
+    if (!noIssues && issueLabels(issues).length === 0)
       return "Tick “No issues”, or tick each item that has an issue.";
     return null;
   }

@@ -10,10 +10,19 @@ export type Issues = {
   hazards_issue: boolean;
 };
 
-export type IssueKey = keyof Issues;
+/// The column names above, for toggling one item on the form.
+export type IssueKey =
+  | "hard_hat_issue"
+  | "vest_issue"
+  | "boots_issue"
+  | "eye_protection_issue"
+  | "fall_protection_issue"
+  | "ladders_scaffolding_issue"
+  | "tools_cords_issue"
+  | "hazards_issue";
 
-export type ChecklistItem = { key: IssueKey; label: string; hint: string };
-export type ChecklistGroup = { title: string; items: ChecklistItem[] };
+type ChecklistItem = { key: IssueKey; label: string; hint: string };
+type ChecklistGroup = { title: string; items: ChecklistItem[] };
 
 export const CHECKLIST_GROUPS: ChecklistGroup[] = [
   {
@@ -68,7 +77,8 @@ export const CHECKLIST_GROUPS: ChecklistGroup[] = [
   },
 ];
 
-export const noIssuesTicked = (): Issues => ({
+/// Every item unticked. Never changed in place; spread it to make a new one.
+export const NO_ISSUES: Issues = {
   hard_hat_issue: false,
   vest_issue: false,
   boots_issue: false,
@@ -77,7 +87,7 @@ export const noIssuesTicked = (): Issues => ({
   ladders_scaffolding_issue: false,
   tools_cords_issue: false,
   hazards_issue: false,
-});
+};
 
 /// Labels of the ticked items, in checklist order. Empty means no issues.
 export function issueLabels(issues: Issues): string[] {

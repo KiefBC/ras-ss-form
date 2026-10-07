@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 :root {
   --ras-mist: #f7f7f7; /* page background */
@@ -18,13 +18,15 @@
     --ras-green: #5cbf98; /* lighter so green text stays readable on dark */
     --ras-slate: #aab4c3;
     --ras-error: #fca5a5;
-    --ras-warning: rgb(250 204 21 / 0.18); /* weaker, or it turns muddy on dark */
+    /* weaker, or it turns muddy on dark */
+    --ras-warning: rgb(250 204 21 / 0.18);
   }
 }
 
 @theme inline {
-  --font-sans: 'Barlow', ui-sans-serif, system-ui, sans-serif;
-  --font-display: 'Barlow Semi Condensed', 'Barlow', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Barlow", ui-sans-serif, system-ui, sans-serif;
+  --font-display:
+    "Barlow Semi Condensed", "Barlow", ui-sans-serif, system-ui, sans-serif;
 
   --color-ras-mist: var(--ras-mist);
   --color-ras-surface: var(--ras-surface);

@@ -1,8 +1,7 @@
-import type { TablesInsert } from "../../lib/database.types";
 import { supabase } from "../../lib/supabase";
 import type { Issues } from "./checklist";
 
-export type SafetyFormInput = {
+type SafetyFormInput = {
   workerId: string;
   siteId: string;
   workDate: string;
@@ -12,8 +11,9 @@ export type SafetyFormInput = {
   photos: File[];
 };
 
-/// File extension for each photo type the safety-photos bucket accepts.
-const EXTENSIONS: { [mimeType: string]: string } = {
+/// The photo types the safety-photos bucket accepts, and the file extension for each.
+/// PhotoPicker uses the keys to decide what can be picked.
+export const PHOTO_EXTENSIONS: { [mimeType: string]: string } = {
   "image/jpeg": "jpg",
   "image/png": "png",
   "image/webp": "webp",
@@ -26,17 +26,16 @@ export async function submitSafetyForm(
 ): Promise<{ failedPhotos: number }> {
   // Save the form and get its id back.
   const notes = input.notes.trim();
-  const submission: TablesInsert<"submissions"> = {
-    worker_id: input.workerId,
-    site_id: input.siteId,
-    work_date: input.workDate,
-    ...input.issues,
-    no_issues: input.noIssues,
-    notes: notes || null,
-  };
   const { data, error } = await supabase
     .from("submissions")
-    .insert(submission)
+    .insert({
+      worker_id: input.workerId,
+      site_id: input.siteId,
+      work_date: input.workDate,
+      ...input.issues, // the Issues keys are the column names
+      no_issues: input.noIssues,
+      notes: notes || null,
+    })
     .select("id")
     .single();
 
@@ -57,10 +56,10 @@ export async function submitSafetyForm(
     );
   }
 
-  // Upload the file to {worker_id}/{submission_id}/{random}.{ext},
+  // Upload each photo to {worker_id}/{submission_id}/{random}.{ext}
   let failedPhotos = 0;
   for (const file of input.photos) {
-    const path = `${input.workerId}/${data.id}/${crypto.randomUUID()}.${EXTENSIONS[file.type]}`;
+    const path = `${input.workerId}/${data.id}/${crypto.randomUUID()}.${PHOTO_EXTENSIONS[file.type]}`;
 
     const upload = await supabase.storage
       .from("safety-photos")

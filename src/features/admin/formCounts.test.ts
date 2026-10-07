@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { noIssuesTicked } from "../safety/checklist";
+import { NO_ISSUES } from "../safety/checklist";
 import { countForms, describeCount, submittersOn } from "./formCounts";
 import type { AdminSubmission } from "./loadSubmissions";
 
@@ -18,7 +18,7 @@ function form(
     siteName: siteId,
     workDate,
     submittedAt: `${workDate}T15:00:00Z`,
-    issues: { ...noIssuesTicked(), hazards_issue: options.hazard ?? false },
+    issues: { ...NO_ISSUES, hazards_issue: options.hazard ?? false },
     notes: null,
     flagged: options.flagged ?? false,
     photoUrls: [],
